@@ -5,10 +5,11 @@
       <input type="text" v-model="addAlbumName">
     </div>
     <button @click="addAlbum">新建相册</button>
+    <!-- <button @click="addImg">addImg</button> -->
     <div v-for="(item, index) in albums" :key="`template-albums${index}`">
-      <span>{{item.name}}</span>
+      <span>{{item.albumName}}</span>
       <br>
-      <div @click="goImage(item.name)">
+      <div @click="goImage(item.albumName)">
         <img :src="item.cover" alt="相册封面">
       </div>
     </div>
@@ -36,6 +37,7 @@ export default {
         .then(
           res => {
             this.albums = res.data;
+            console.log(this.albums)
           },
           req => {}
         );
@@ -46,9 +48,11 @@ export default {
     addAlbum() {
       this.$http.post("http://127.0.0.1:3000/addAlbum", {
         userName: localStorage.currentUser,
-        name: this.addAlbumName,
+        albumName: this.addAlbumName,
         cover: this.addAlbumCover
-      });
+      }).then(res=>{
+        this.getAlbums()
+      })
     }
   }
 };

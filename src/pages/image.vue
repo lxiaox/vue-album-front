@@ -2,7 +2,8 @@
   <div class="wrapper">
     <button @click="addImage">添加图片</button>
     <div v-for="(item, index) in images" :key="`image-images${index}`">
-      <img :src="item" alt="图片">
+      <span>{{ item.imageName }}</span>
+      <img :src="item.imageSrc" alt="图片">
     </div>
   </div>
 </template>
@@ -16,11 +17,11 @@ export default {
     }
   },
   mounted(){
-    this.getImagesByAlbumName()
+    this.getImages()
   },
   methods: {
-    getImagesByAlbumName(){
-      this.$http.get('http://127.0.0.1:3000/getImagesByAlbumName',{
+    getImages(){
+      this.$http.get('http://127.0.0.1:3000/getImages',{
         params:{userName: localStorage.currentUser, albumName:this.$route.params.album}
       }).then((res)=>{
         this.images = res.data
@@ -32,7 +33,7 @@ export default {
         albumName: this.$route.params.album,
         img: this.imgSrc
       }).then(()=>{
-        this.getImagesByAlbumName()
+        this.getImages()
       })
     }
   }
