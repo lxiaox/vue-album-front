@@ -10,6 +10,9 @@
         <span class="description">上传发票文件，仅限PDF类型，单张上传</span><br>
         <button class="commonBtn" @click="selectPdf" ref="selectPdf">选择文件上传</button>
         <span class="uploadTip" v-if="ifUploadTipShow">{{ uploadMsg }}</span>
+        <!-- Alert  -->
+        <!-- <Alert banner type="success">Notice: notification contents...</Alert> -->
+        <!-- <Alert banner closable type="success">Notice: notification contents...</Alert>   -->
     </div>
 </template>
 

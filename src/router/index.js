@@ -1,20 +1,34 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import InvoicePage from '@/components/InvoicePage'
-import ImageShow from '@/components/ImageShow'
-import signIn from '../pages/signIn.vue'
-import signUp from '../pages/signUp.vue'
-
+import {signIn,signUp,template,album,image} from '@/pages'
 Vue.use(Router)
 
 export default new Router({
   routes: [{
+    path: '/sign_up',
+    name: 'sign_up',
+    component: signUp
+  }, {
     path: '/sign_in',
-    name: 'signIn',
+    name: 'sign_in',
     component: signIn
   }, {
-    path: '/sign_up',
-    name: 'signUp',
-    component: signUp
+    path: '/',
+    name: 'home',
+    redirect: '/sign_in'
+  }, {
+    path: '/home',
+    name: 'home',
+    component: template,
+    redirect: '/home/album',
+    children: [{
+      path: 'album',
+      name: 'home.album',
+      component: album
+    },{
+      path: 'image/:album',
+      name: 'home.image',
+      component: image
+    }]
   }]
 })

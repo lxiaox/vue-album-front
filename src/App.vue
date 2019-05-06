@@ -1,19 +1,12 @@
 <template>
-    <div id="app" style="height:100%">
-        <router-view/>
-    </div>
+    <router-view/>
 </template>
 
 <script>
 export default {
-    name: 'App',
-    data() {
-        return {
-        }
-    },
-    components: {},
-};
+  name: 'App',
+  data () {
+    return {}
+  },
+}
 </script>
-
-<style>
-</style>
