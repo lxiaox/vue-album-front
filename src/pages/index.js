@@ -1,5 +1,5 @@
-import signIn from '@/pages/sign_in'
-import signUp from '@/pages/sign_up'
+import signIn from '@/pages/signIn'
+import signUp from '@/pages/signUp'
 import template from '@/pages/template'
 import album from '@/pages/album'
 import image from '@/pages/image'
