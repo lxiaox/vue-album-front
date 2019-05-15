@@ -51,9 +51,9 @@ export default {
         })
         .then(
           res => {
-            this.$Message.success(res.data);
+            this.$Message.success('登录成功');
             this.$router.push({name:'home.album'})
-            localStorage.currentUser = this.userName
+            localStorage.currentUser = res.data._id
           },
           req => {
             this.$Message.error(req.response.data);

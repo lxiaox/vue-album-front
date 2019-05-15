@@ -19,20 +19,33 @@
           </div>
         </div>
         <!-- 下拉菜单 -->
-        <Dropdown class="drop-menu">
+        <Dropdown @on-click="handleDropDownClick($event, item)" class="drop-menu">
           <a href="javascript:void(0)">
             <Icon type="ios-arrow-down"></Icon>
           </a>
           <DropdownMenu class="drop-sub-menu" slot="list">
-            <DropdownItem>编辑相册</DropdownItem>
-            <DropdownItem>删除相册</DropdownItem>
+            <DropdownItem name="editAlbum">编辑相册</DropdownItem>
+            <DropdownItem name="deleteAlbum">删除相册</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
     </div>
+    <!-- 删除提示 -->
+    <Modal
+      class="delete-top-box"
+      v-model="modalDel"
+      title="操作提示"
+      width="400"
+      :styles="{top: '240px'}"
+      @on-ok="confirmDelete"
+    >
+      <p>删除后可在回收站内查看</p>
+    </Modal>
+    <!-- 无相册显示 -->
     <div class="no-album-box" v-show="noAlbumShow">
       <span>还没有相册，快去创建吧~</span>
     </div>
+    <!-- 新建/编辑相册框 -->
     <div class="add-album-box-wrapper" v-show="addAlbumShow">
       <div class="add-album-box">
         <div class="title">创建相册</div>
@@ -44,6 +57,21 @@
           <div class="row2">
             <label class="album-description">相册描述</label>
             <textarea v-model="addAlbumDescription"></textarea>
+          </div>
+          <div class="row2 row-cover" v-show="isEditAlbum">
+            <label>更换封面</label>
+            <button class="upload-img-btn" @click="uploadImage">选择图片</button>
+            <input
+              class="upload-img-default"
+              ref="inputImg"
+              type="file"
+              name="img"
+              accept="image/*"
+              @change="changePic"
+            >
+            <div v-show="coverPreviewShow" class="previewCoverWrapper">
+              <img :src="newCoverSrc">
+            </div>
           </div>
           <div class="row2">
             <label class="class-title">分类</label>
@@ -63,7 +91,8 @@
           </div>
         </div>
         <div class="foot-row">
-          <button @click="addAlbum2">确定</button>
+          <button class="primary" @click="editAlbum2" v-show="isEditAlbum">保存</button>
+          <button class="primary" @click="addAlbum2" v-show="isAddAlbum">确定</button>
           <button @click="cancelAddAlbum">取消</button>
         </div>
       </div>
@@ -80,6 +109,7 @@ export default {
       noAlbumShow: false,
       addAlbumShow: false,
       isAddAlbum: true,
+      isEditAlbum: false,
       albumClass: [
         { value: 1, name: "普通" },
         { value: 2, name: "风景" },
@@ -87,7 +117,12 @@ export default {
         { value: 4, name: "美食" },
         { value: 5, name: "旅游" }
       ],
-      addAlbumClassification: "1"
+      addAlbumClassification: 1,
+      newCoverSrc: "",
+      coverPreviewShow: false,
+      currentEditAlbum: {},
+      currentDeleteAlbum: {},
+      modalDel: false
     };
   },
   mounted() {
@@ -97,13 +132,15 @@ export default {
     getAlbums() {
       this.$http
         .get("http://127.0.0.1:3000/getAlbums", {
-          params: { userName: localStorage.currentUser }
+          params: { userId: localStorage.currentUser }
         })
         .then(
           res => {
             this.albums = res.data;
+            this.noAlbumShow = false;
           },
           req => {
+            this.albums = {}
             this.noAlbumShow = true;
           }
         );
@@ -113,6 +150,11 @@ export default {
     },
     addAlbum() {
       this.addAlbumShow = true;
+      this.isAddAlbum = true;
+      this.isEditAlbum = false;
+      this.addAlbumName = "";
+      this.addAlbumDescription = "";
+      this.addAlbumClassification = 1;
     },
     addAlbum2() {
       if (!this.addAlbumName.trim()) {
@@ -121,16 +163,15 @@ export default {
       }
       this.$http
         .post("http://127.0.0.1:3000/addAlbum", {
-          userName: localStorage.currentUser,
+          userId: localStorage.currentUser,
           albumName: this.addAlbumName,
           description: this.addAlbumDescription,
           classification: this.addAlbumClassification
         })
         .then(
           res => {
-            this.getAlbums();
             this.cancelAddAlbum();
-            this.getAlbums()
+            this.getAlbums();
           },
           req => {
             this.$Message.error(req.response.data);
@@ -139,6 +180,78 @@ export default {
     },
     cancelAddAlbum() {
       this.addAlbumShow = false;
+      this.coverPreviewShow = false;
+      this.newCoverSrc = "";
+    },
+    handleDropDownClick($event, item) {
+      if ($event === "editAlbum") this.editAlbum(item);
+      if ($event === "deleteAlbum") this.deleteAlbum(item);
+    },
+    editAlbum(item) {
+      this.addAlbumShow = true;
+      this.isAddAlbum = false;
+      this.isEditAlbum = true;
+      this.addAlbumName = item.albumName;
+      this.addAlbumDescription = item.description;
+      this.addAlbumClassification = item.classification;
+      this.currentEditAlbum = item;
+    },
+    uploadImage() {
+      this.$refs.inputImg.click();
+    },
+    editAlbum2() {
+      if (!this.addAlbumName.trim()) {
+        this.$Message.error("相册名称不能为空");
+        return;
+      }
+      this.$http
+        .post("http://127.0.0.1:3000/editAlbum", {
+          userId: localStorage.currentUser,
+          albumId: this.currentEditAlbum.albumId,
+          albumName: this.addAlbumName,
+          description: this.addAlbumDescription,
+          classification: this.addAlbumClassification,
+          cover: this.newCoverSrc
+        })
+        .then(
+          res => {
+            this.cancelAddAlbum();
+            this.getAlbums();
+          },
+          req => {
+            this.$Message.error(req.response.data);
+          }
+        );
+    },
+    changePic: function changePic() {
+      var reads = new FileReader();
+      const _that = this;
+      this.img = this.$refs.inputImg.files[0];
+      reads.readAsDataURL(this.img);
+      reads.onload = function() {
+        _that.newCoverSrc = this.result;
+        _that.coverPreviewShow = true;
+      };
+    },
+    deleteAlbum(item) {
+      this.modalDel = true;
+      this.currentDeleteAlbum = item;
+    },
+    confirmDelete() {
+      this.$http
+        .post("http://127.0.0.1:3000/deleteAlbum", {
+          userId: localStorage.currentUser,
+          albumId: this.currentDeleteAlbum.albumId,
+        })
+        .then(
+          res => {
+            this.$Message.success('删除成功')
+            this.getAlbums();
+          },
+          req => {
+            this.$Message.error(req.response.data);
+          }
+        );
     }
   }
 };
@@ -251,6 +364,7 @@ export default {
     text-decoration: underline;
   }
   .add-album-box-wrapper {
+    z-index: 1000;
     width: 100vw;
     height: 100vh;
     position: fixed;
@@ -264,7 +378,7 @@ export default {
       padding: 1px;
       background: #fff;
       position: absolute;
-      top: 105px;
+      top: 75px;
       left: 50%;
       transform: translateX(-50%);
       .title {
@@ -296,6 +410,19 @@ export default {
             vertical-align: middle;
           }
         }
+        .row2.row-cover {
+          .upload-img-default {
+            display: none;
+          }
+          .upload-img-btn {
+          }
+          .previewCoverWrapper {
+            width: 200px;
+            height: 100px;
+            margin-top: 10px;
+            margin-left: 70px;
+          }
+        }
       }
       .foot-row {
         width: 456px;
@@ -308,7 +435,7 @@ export default {
           line-height: 24px;
           padding: 0 16px;
           border-radius: 2px;
-          &:first-child {
+          &.primary {
             border: 1px solid #4c92c8;
             background: #56bdf4;
             color: white;
