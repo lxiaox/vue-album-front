@@ -5,7 +5,7 @@
     </div>
     <div class="album-box-wrapper clearfix">
       <div class="album-box" v-for="(item, index) in albums" :key="`template-albums${index}`">
-        <div class="album-cover" @click="goImage(item.albumName)">
+        <div class="album-cover" @click="goImage(item.albumId)">
           <img :src="item.cover" alt="相册封面">
         </div>
         <div class="album-msg clearfix">
@@ -136,17 +136,23 @@ export default {
         })
         .then(
           res => {
-            this.albums = res.data;
-            this.noAlbumShow = false;
+            console.log(res);
+            if (res.status === 201) {
+              this.albums = {};
+              this.noAlbumShow = true;
+            }
+            if (res.status === 200) {
+              this.albums = res.data;
+              this.noAlbumShow = false;
+            }
           },
           req => {
-            this.albums = {}
-            this.noAlbumShow = true;
+            this.$Message.error("系统出错,请稍后重试");
           }
         );
     },
-    goImage(albumName) {
-      this.$router.push({ name: "home.image", params: { album: albumName } });
+    goImage(albumId) {
+      this.$router.push({ name: "home.image", params: { album: albumId } });
     },
     addAlbum() {
       this.addAlbumShow = true;
@@ -215,6 +221,7 @@ export default {
         })
         .then(
           res => {
+            this.$Message.success("保存成功");
             this.cancelAddAlbum();
             this.getAlbums();
           },
@@ -240,12 +247,11 @@ export default {
     confirmDelete() {
       this.$http
         .post("http://127.0.0.1:3000/deleteAlbum", {
-          userId: localStorage.currentUser,
-          albumId: this.currentDeleteAlbum.albumId,
+          albumId: this.currentDeleteAlbum.albumId
         })
         .then(
           res => {
-            this.$Message.success('删除成功')
+            this.$Message.success("删除成功");
             this.getAlbums();
           },
           req => {

@@ -6,8 +6,8 @@
       </div>
       <div class="navs">
         <ul>
-          <li :class="{'active': active==='home'}" @click="goHome">Home</li>
-          <li :class="{'active': active==='image'}" @click="goImage">Image</li>
+          <li :class="{'active': active==='home.album'}" @click="goHome">Home</li>
+          <li :class="{'active': active==='home.image'}" @click="goImage">Image</li>
           <li :class="{'active': active==='$'}">Layout</li>
           <li :class="{'active': active==='$'}">Recent</li>
           <li :class="{'active': active==='$'}">Recycle</li>
@@ -39,17 +39,21 @@
 export default {
   data() {
     return {
-      active: 'home',
+      active: "home.album"
     };
   },
   methods: {
     goHome() {
-      this.active = 'home'
       this.$router.push({ name: "home.album" });
     },
     goImage() {
-      this.active = 'image'
-      this.$router.push({ name: "home.image" });
+      this.$router.push({ name: "home.image", params: { album: 'all' } });
+    }
+  },
+  watch: {
+    $route(to) {
+      console.log(to);
+      this.active = to.name
     }
   }
 };
@@ -102,6 +106,7 @@ export default {
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 30px;
+    min-height: 70vh;
     // width: 990px;
     // border: 1px solid #57b0ad;
   }
