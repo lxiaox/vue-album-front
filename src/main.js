@@ -8,6 +8,7 @@ import './components/index.js'
 import iView from 'iview/dist/iview.js'
 import 'iview/dist/styles/iview.css'
 import './assets/less/index.less'
+import './assets/iconfont/iconfont.css'
 
 Vue.use(iView)
 // Vue.component('Icon', Icon)

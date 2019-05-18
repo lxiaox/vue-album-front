@@ -5,7 +5,7 @@
     </div>
     <div class="album-box-wrapper clearfix">
       <div class="album-box" v-for="(item, index) in albums" :key="`template-albums${index}`">
-        <div class="album-cover" @click="goImage(item.albumId)">
+        <div class="album-cover" @click="goImage(item)">
           <img :src="item.cover" alt="相册封面">
         </div>
         <div class="album-msg clearfix">
@@ -43,7 +43,7 @@
     </Modal>
     <!-- 无相册显示 -->
     <div class="no-album-box" v-show="noAlbumShow">
-      <span>还没有相册，快去创建吧~</span>
+      <i class="iconfont icon-kong"></i>
     </div>
     <!-- 新建/编辑相册框 -->
     <div class="add-album-box-wrapper" v-show="addAlbumShow">
@@ -91,8 +91,8 @@
           </div>
         </div>
         <div class="foot-row">
-          <button class="primary" @click="editAlbum2" v-show="isEditAlbum">保存</button>
-          <button class="primary" @click="addAlbum2" v-show="isAddAlbum">确定</button>
+          <button :disabled="btnDisalbed" :class="{'btn-disable': btnDisalbed}" class="primary" @click="editAlbum2" v-show="isEditAlbum">保存</button>
+          <button :disabled="btnDisalbed" :class="{'btn-disable': btnDisalbed}" class="primary" @click="addAlbum2" v-show="isAddAlbum">确定</button>
           <button @click="cancelAddAlbum">取消</button>
         </div>
       </div>
@@ -122,7 +122,8 @@ export default {
       coverPreviewShow: false,
       currentEditAlbum: {},
       currentDeleteAlbum: {},
-      modalDel: false
+      modalDel: false,
+      btnDisalbed: false,
     };
   },
   mounted() {
@@ -151,8 +152,8 @@ export default {
           }
         );
     },
-    goImage(albumId) {
-      this.$router.push({ name: "home.image", params: { album: albumId } });
+    goImage(item) {
+      this.$router.push({ name: "home.image", params: { album: item } });
     },
     addAlbum() {
       this.addAlbumShow = true;
@@ -167,6 +168,7 @@ export default {
         this.$Message.error("相册名称不能为空");
         return;
       }
+      this.btnDisalbed = true
       this.$http
         .post("http://127.0.0.1:3000/addAlbum", {
           userId: localStorage.currentUser,
@@ -188,6 +190,7 @@ export default {
       this.addAlbumShow = false;
       this.coverPreviewShow = false;
       this.newCoverSrc = "";
+      this.btnDisalbed = false
     },
     handleDropDownClick($event, item) {
       if ($event === "editAlbum") this.editAlbum(item);
@@ -210,6 +213,7 @@ export default {
         this.$Message.error("相册名称不能为空");
         return;
       }
+      this.btnDisalbed = true
       this.$http
         .post("http://127.0.0.1:3000/editAlbum", {
           userId: localStorage.currentUser,
@@ -287,15 +291,17 @@ export default {
     width: 100%;
     .album-box {
       // border: 2px solid #57b0ad;
-      border: 2px solid #ea6f5a;
+      border: 2px solid #e28675;
       float: left;
       width: 30.666%;
+      width: 30.6%;
+      width: 22%;
       padding: 1px;
       margin: 20px 15px;
       position: relative;
       .album-cover {
         cursor: pointer;
-        height: 180px;
+        height: 160px;
         overflow: hidden;
         img {
           transition: transform 0.3s ease;
@@ -441,6 +447,10 @@ export default {
           line-height: 24px;
           padding: 0 16px;
           border-radius: 2px;
+          cursor: pointer;
+          &.btn-disable{
+            cursor: not-allowed;
+          }
           &.primary {
             border: 1px solid #4c92c8;
             background: #56bdf4;

@@ -1,17 +1,17 @@
 <template>
   <div class="template-wrapper">
     <div class="top-navbar">
-      <div class="logo">
+      <!-- <div class="logo">
         <img src="static/images/logo1.png" alt="logo">
-      </div>
+      </div> -->
       <div class="navs">
         <ul>
-          <li :class="{'active': active==='home.album'}" @click="goHome">Home</li>
-          <li :class="{'active': active==='home.image'}" @click="goImage">Image</li>
-          <li :class="{'active': active==='$'}">Layout</li>
-          <li :class="{'active': active==='$'}">Recent</li>
-          <li :class="{'active': active==='$'}">Recycle</li>
-          <li :class="{'active': active==='$'}">About</li>
+          <li :class="{'active': active==='home.album'}" @click="goHome">相册</li>
+          <li :class="{'active': active==='home.image'}" @click="goImage">图片</li>
+          <li :class="{'active': active==='$'}">布局</li>
+          <li :class="{'active': active==='$'}">最近照片</li>
+          <li :class="{'active': active==='$'}">回收站</li>
+          <li :class="{'active': active==='$'}">个人中心</li>
         </ul>
       </div>
     </div>
@@ -52,7 +52,7 @@ export default {
   },
   watch: {
     $route(to) {
-      console.log(to);
+      console.log(to.name);
       this.active = to.name
     }
   }
@@ -72,8 +72,9 @@ export default {
     }
     .navs {
       // background: #57b0ad;
+      margin-top: 30px;
       background: #2a394e;
-      padding: 20px 60px;
+      padding: 15px 60px;
       display: flex;
       justify-content: center;
       margin-bottom: 60px;
@@ -82,7 +83,7 @@ export default {
         li {
           border-right: 2px solid white;
           color: #fff;
-          font-size: 28px;
+          font-size: 17px;
           font-weight: 400;
           padding-left: 30px;
           padding-right: 30px;
@@ -108,7 +109,7 @@ export default {
     margin-bottom: 30px;
     min-height: 70vh;
     // width: 990px;
-    // border: 1px solid #57b0ad;
+    border: 1px solid #57b0ad;
   }
   footer {
     width: 100%;
