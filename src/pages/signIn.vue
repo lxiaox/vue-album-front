@@ -47,7 +47,7 @@ export default {
       this.$http
         .post('http://127.0.0.1:3000/signIn', {
           userName: this.userName,
-          password: this.password
+          password: this.$MD5(this.password)
         })
         .then(
           res => {

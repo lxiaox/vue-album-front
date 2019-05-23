@@ -6,10 +6,9 @@
       </div> -->
       <div class="navs">
         <ul>
-          <li :class="{'active': active==='home.album'}" @click="goHome">相册</li>
-          <li :class="{'active': active==='home.image'}" @click="goImage">图片</li>
-          <li :class="{'active': active==='$'}">布局</li>
-          <li :class="{'active': active==='$'}">最近照片</li>
+          <li :class="{'active': active==='home.album'}" @click="toHome">相册</li>
+          <li :class="{'active': active==='home.image'}" @click="toImage">图片</li>
+          <li :class="{'active': active==='$'}">布局展示</li>
           <li :class="{'active': active==='$'}">回收站</li>
           <li :class="{'active': active==='$'}">个人中心</li>
         </ul>
@@ -39,15 +38,15 @@
 export default {
   data() {
     return {
-      active: "home.album"
+      active: "" //home.album
     };
   },
   methods: {
-    goHome() {
+    toHome() {
       this.$router.push({ name: "home.album" });
     },
-    goImage() {
-      this.$router.push({ name: "home.image", params: { album: 'all' } });
+    toImage() {
+      this.$router.push({ name: "home.image"});
     }
   },
   watch: {
@@ -60,6 +59,7 @@ export default {
 </script>
 
 <style lang="less">
+@import url('../assets/less/color.less');;
 .template-wrapper {
   .top-navbar {
     .logo {
@@ -72,7 +72,7 @@ export default {
     }
     .navs {
       // background: #57b0ad;
-      margin-top: 30px;
+      // margin-top: 30px;
       background: #2a394e;
       padding: 15px 60px;
       display: flex;
@@ -82,9 +82,9 @@ export default {
         display: flex;
         li {
           border-right: 2px solid white;
-          color: #fff;
-          font-size: 17px;
-          font-weight: 400;
+          color: @topnav-default;
+          font-size: 16px;
+          font-weight: 300;
           padding-left: 30px;
           padding-right: 30px;
           transition: all 0.3s;
@@ -93,10 +93,10 @@ export default {
             border-right: none;
           }
           &:hover {
-            background: #bad8e0;
+            color: @topnav-hover;
           }
           &.active {
-            color: #57b0ad;
+            color: @red-black;
           }
         }
       }
@@ -109,7 +109,7 @@ export default {
     margin-bottom: 30px;
     min-height: 70vh;
     // width: 990px;
-    border: 1px solid #57b0ad;
+    // border: 1px solid @red-jianshu;
   }
   footer {
     width: 100%;

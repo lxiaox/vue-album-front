@@ -1,0 +1,55 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation: fadeIn .8s;
+}
+
+@keyframes growIn {
+  from {
+    transform: scale(0.1);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.growIn {
+  animation: growIn 1s;
+}
+
+@keyframes rotateIn {
+  from {
+    transform: rotateY(60deg);
+  }
+
+  to {
+    transform: rotateY(0);
+  }
+}
+
+.rotateIn {
+  animation: rotateIn 1s;
+}
+
+@keyframes shrinkIn {
+  from {
+    transform: scale(1.2);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.shrinkIn {
+  animation: shrinkIn .6s linear;
+}

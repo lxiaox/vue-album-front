@@ -1,16 +1,21 @@
 <template>
   <div class="album-wrapper">
-    <div class="row1">
-      <button @click="addAlbum">创建相册</button>
+    <!-- 创建相册行 -->
+    <div class="create-album-row">
+      <button class="create-album" @click="addAlbum">
+        <Icon type="ios-create-outline" size="24"/>
+        创建相册
+      </button>
     </div>
+    <!-- 所有相册 -->
     <div class="album-box-wrapper clearfix">
       <div class="album-box" v-for="(item, index) in albums" :key="`template-albums${index}`">
-        <div class="album-cover" @click="goImage(item)">
+        <div class="album-cover" @click="toAlbumView(item)">
           <img :src="item.cover" alt="相册封面">
         </div>
         <div class="album-msg clearfix">
           <div class="album-name">
-            <span>{{ item.albumName }}</span>
+            <span :title="item.albumName">{{ item.albumName }}</span>
           </div>
           <div class="album-image-counts">
             <span>{{ item.imageCounts }}</span>
@@ -42,23 +47,28 @@
       <p>删除后可在回收站内查看</p>
     </Modal>
     <!-- 无相册显示 -->
-    <div class="no-album-box" v-show="noAlbumShow">
+    <div class="nothing-msg" v-show="noAlbumShow">
       <i class="iconfont icon-kong"></i>
+      <br>
+      <span @click="addAlbum">还没有相册，去创建</span>
     </div>
     <!-- 新建/编辑相册框 -->
     <div class="add-album-box-wrapper" v-show="addAlbumShow">
       <div class="add-album-box">
-        <div class="title">创建相册</div>
+        <div class="title clearfix">
+          创建相册
+          <Icon @click="cancelAddAlbum" class="close-icon" type="md-close" size="18"/>
+        </div>
         <div class="content">
           <div class="row2">
             <label>相册名称</label>
-            <input v-model="addAlbumName" type="text">
+            <input v-model="addAlbumName" type="text" placeholder="不超过10个字符">
           </div>
           <div class="row2">
             <label class="album-description">相册描述</label>
             <textarea v-model="addAlbumDescription"></textarea>
           </div>
-          <div class="row2 row-cover" v-show="isEditAlbum">
+          <div class="row2 row-cover" v-show="!isAddAlbum">
             <label>更换封面</label>
             <button class="upload-img-btn" @click="uploadImage">选择图片</button>
             <input
@@ -91,8 +101,20 @@
           </div>
         </div>
         <div class="foot-row">
-          <button :disabled="btnDisalbed" :class="{'btn-disable': btnDisalbed}" class="primary" @click="editAlbum2" v-show="isEditAlbum">保存</button>
-          <button :disabled="btnDisalbed" :class="{'btn-disable': btnDisalbed}" class="primary" @click="addAlbum2" v-show="isAddAlbum">确定</button>
+          <button
+            :disabled="btnDisalbed"
+            :class="{'btn-disable': btnDisalbed}"
+            class="primary"
+            @click="editAlbum2"
+            v-show="!isAddAlbum"
+          >保存</button>
+          <button
+            :disabled="btnDisalbed"
+            :class="{'btn-disable': btnDisalbed}"
+            class="primary"
+            @click="addAlbum2"
+            v-show="isAddAlbum"
+          >确定</button>
           <button @click="cancelAddAlbum">取消</button>
         </div>
       </div>
@@ -109,7 +131,6 @@ export default {
       noAlbumShow: false,
       addAlbumShow: false,
       isAddAlbum: true,
-      isEditAlbum: false,
       albumClass: [
         { value: 1, name: "普通" },
         { value: 2, name: "风景" },
@@ -123,7 +144,7 @@ export default {
       currentEditAlbum: {},
       currentDeleteAlbum: {},
       modalDel: false,
-      btnDisalbed: false,
+      btnDisalbed: false
     };
   },
   mounted() {
@@ -137,7 +158,6 @@ export default {
         })
         .then(
           res => {
-            console.log(res);
             if (res.status === 201) {
               this.albums = {};
               this.noAlbumShow = true;
@@ -152,13 +172,13 @@ export default {
           }
         );
     },
-    goImage(item) {
-      this.$router.push({ name: "home.image", params: { album: item } });
+    toAlbumView(item) {
+      this.$router.push({ name: `home.albumView`, params: { album: item } });
+      localStorage.viewAlbum = JSON.stringify(item);
     },
     addAlbum() {
       this.addAlbumShow = true;
       this.isAddAlbum = true;
-      this.isEditAlbum = false;
       this.addAlbumName = "";
       this.addAlbumDescription = "";
       this.addAlbumClassification = 1;
@@ -168,7 +188,11 @@ export default {
         this.$Message.error("相册名称不能为空");
         return;
       }
-      this.btnDisalbed = true
+      if(this.addAlbumName.length > 10) {
+        this.$Message.error('相册名称过长')
+        return
+      }
+      this.btnDisalbed = true;
       this.$http
         .post("http://127.0.0.1:3000/addAlbum", {
           userId: localStorage.currentUser,
@@ -190,7 +214,7 @@ export default {
       this.addAlbumShow = false;
       this.coverPreviewShow = false;
       this.newCoverSrc = "";
-      this.btnDisalbed = false
+      this.btnDisalbed = false;
     },
     handleDropDownClick($event, item) {
       if ($event === "editAlbum") this.editAlbum(item);
@@ -199,7 +223,6 @@ export default {
     editAlbum(item) {
       this.addAlbumShow = true;
       this.isAddAlbum = false;
-      this.isEditAlbum = true;
       this.addAlbumName = item.albumName;
       this.addAlbumDescription = item.description;
       this.addAlbumClassification = item.classification;
@@ -213,7 +236,11 @@ export default {
         this.$Message.error("相册名称不能为空");
         return;
       }
-      this.btnDisalbed = true
+     if(this.addAlbumName.length > 10) {
+        this.$Message.error('相册名称过长')
+        return
+      }
+      this.btnDisalbed = true;
       this.$http
         .post("http://127.0.0.1:3000/editAlbum", {
           userId: localStorage.currentUser,
@@ -259,7 +286,7 @@ export default {
             this.getAlbums();
           },
           req => {
-            this.$Message.error(req.response.data);
+            this.$Message.error('系统出错');
           }
         );
     }
@@ -268,30 +295,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import url("../assets/less/color.less");
 .album-wrapper {
   width: 100%;
-  .row1 {
+  .create-album-row {
     margin-bottom: 16px;
     padding-left: 20px;
     font-size: 14px;
-    button {
-      padding: 7px 14px;
-      background: #57b0ad;
-      // background: #ea6f5a;
-      border: none;
-      outline: none;
-      transition: all 0.3s;
-      color: #fff;
-      &:hover {
-        box-shadow: 0 0 5px 1px rgba(45, 159, 166, 0.8);
-      }
+    button.create-album {
+      font-size: 16px;
     }
   }
   .album-box-wrapper {
     width: 100%;
     .album-box {
       // border: 2px solid #57b0ad;
-      border: 2px solid #e28675;
+      border: 1px solid @red-cv;
+      // border: 2px solid #fff;
+      border-radius: 2px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
       float: left;
       width: 30.666%;
       width: 30.6%;
@@ -318,12 +340,13 @@ export default {
         // cursor: pointer;
         .album-name {
           float: left;
-          padding: 8px 0 8px 30px;
+          padding: 10px 8px 10px 30px;
           color: #2a394e;
-          font-size: 24px;
-          width: 80%;
-          // background: #57b0ad;
-          // border: 1px solid #57b0ad;
+          font-size: 22px;
+          width: 74%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
           &:hover {
             background: #fff;
           }
@@ -331,12 +354,13 @@ export default {
         .album-image-counts {
           float: right;
           text-align: center;
-          width: 20%;
+          width: 26%;
           height: 100%;
-          background: #76bebb;
+          background: @red-cv;
           font-size: 14px;
           color: #fff;
           padding: 6px 0;
+          border-radius: 2px;
         }
       }
       .drop-menu {
@@ -367,14 +391,6 @@ export default {
       }
     }
   }
-  .no-album-box {
-    width: 100%;
-    text-align: center;
-    font-size: 20px;
-    padding-top: 100px;
-    padding-bottom: 130px;
-    text-decoration: underline;
-  }
   .add-album-box-wrapper {
     z-index: 1000;
     width: 100vw;
@@ -403,6 +419,11 @@ export default {
         height: 32px;
         background: #f3f3f3;
         border-bottom: 1px solid #ccc;
+        .close-icon {
+          float: right;
+          margin-top: 7px;
+          margin-right: 5px;
+        }
       }
       .content {
         padding: 30px 16px 4px 50px;
@@ -417,6 +438,10 @@ export default {
           textarea {
             width: 200px;
             height: 40px !important;
+            padding: 3px;
+          }
+          input[type="text"] {
+            padding: 3px;
           }
           input[type="radio"] {
             vertical-align: middle;
@@ -448,7 +473,7 @@ export default {
           padding: 0 16px;
           border-radius: 2px;
           cursor: pointer;
-          &.btn-disable{
+          &.btn-disable {
             cursor: not-allowed;
           }
           &.primary {
