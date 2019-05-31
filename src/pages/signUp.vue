@@ -18,7 +18,9 @@
       <div class="row">
         <button class="sign-up-btn" @click="signUp">注册</button>
       </div>
-      <div class="row1"><a @click="toSignIn">已有账号，去登录>></a></div>
+      <div class="row1">
+        <a @click="toSignIn">已有账号，去登录>></a>
+      </div>
     </div>
   </div>
 </template>
@@ -28,51 +30,51 @@ export default {
   name: "HeadNav",
   data() {
     return {
-      userName: '',
-      password: '',
-      passwordConfirmation: '',
+      userName: "",
+      password: "",
+      passwordConfirmation: ""
     };
   },
   methods: {
     toSignIn() {
-      this.$router.push({name: 'sign_in'})
+      this.$router.push({ name: "sign_in" });
     },
     signUp() {
-      let regExp = new RegExp(/^[a-zA-Z0-9]{3,21}$/)
-      this.userName = this.userName.trim()
-      if(!this.userName) {
-        this.$Message.error('用户名不能为空')
-        return
+      let regExp = new RegExp(/^[a-zA-Z0-9]{3,21}$/); //(/^[\w]{3,21}$/)
+      this.userName = this.userName.trim();
+      if (!this.userName) {
+        this.$Message.error("用户名不能为空");
+        return;
       }
-      if(!this.password) {
-        this.$Message.error('密码不能为空')
-        return
+      if (!this.password) {
+        this.$Message.error("密码不能为空");
+        return;
       }
-      if(!this.passwordConfirmation) {
-        this.$Message.error('确认密码不能为空')
-        return
+      if (!this.passwordConfirmation) {
+        this.$Message.error("确认密码不能为空");
+        return;
       }
-      if(!regExp.test(this.password)) {
-        this.$Message.error('密码应由3至21位字母或数字组成')
-        return
+      if (!regExp.test(this.password)) {
+        this.$Message.error("密码应由3至21位字母或数字组成");
+        return;
       }
-      if(this.password !== this.passwordConfirmation) {
-        this.$Message.error('两次密码不匹配')
-        return
+      if (this.password !== this.passwordConfirmation) {
+        this.$Message.error("两次密码不匹配");
+        return;
       }
       this.$http
-        .post('http://127.0.0.1:3000/signUp', {
+        .post("http://127.0.0.1:3000/signUp", {
           userName: this.userName,
           password: this.$MD5(this.password)
         })
         .then(
           res => {
             this.$Message.success(res.data);
-            this.$router.push({name:'sign_in'})
+            this.$router.push({ name: "sign_in" });
           },
           err => {
-            this.$Message.error('系统出错，请稍后重试');
-            console.log(err)
+            this.$Message.error("系统出错，请稍后重试");
+            console.log(err);
           }
         );
     }
@@ -81,12 +83,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import url('../assets/less/color.less');
 .sign-in-wrapper {
   .logo {
     position: fixed;
     top: 40px;
     left: 40px;
-    color: #ea6f5a;
+    color: @demo-green;
     font-size: 50px;
     font-weight: 600;
   }
@@ -100,7 +103,7 @@ export default {
     border: 1px solid #ddd;
     border-radius: 3px;
     h5 {
-      color: #ea6f5a;
+      color: @demo-green;
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 30px;
@@ -148,15 +151,15 @@ export default {
         }
       }
     }
-    .row1{
+    .row1 {
       width: 100%;
       text-align: right;
-      a{
+      a {
         text-decoration: underline;
         font-size: 14px;
         color: #515a6e;
-        &:hover{
-          color:#ea6f5a;
+        &:hover {
+          color: #ea6f5a;
         }
       }
     }

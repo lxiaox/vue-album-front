@@ -1,119 +1,180 @@
 <template>
   <div class="template-wrapper">
-    <div class="top-navbar">
-      <!-- <div class="logo">
-        <img src="static/images/logo1.png" alt="logo">
-      </div> -->
-      <div class="navs">
-        <ul>
-          <li :class="{'active': active==='home.album'}" @click="toHome">相册</li>
-          <li :class="{'active': active==='home.image'}" @click="toImage">图片</li>
-          <li :class="{'active': active==='$'}">布局展示</li>
-          <li :class="{'active': active==='$'}">回收站</li>
-          <li :class="{'active': active==='$'}">个人中心</li>
-        </ul>
-      </div>
-    </div>
-    <div class="inner">
-      <router-view/>
-    </div>
-    <hr>
-    <footer>
-      <div class="footer-inner">
-        <div class="row1">
-          <a href="javascript:void(0)" class="a-qq"></a>
-          <a href="javascript:void(0)" class="a-weichat"></a>
-          <a href="javascript:void(0)" class="a-github"></a>
+    <div class="side-navbar">
+      <div class="side-inner">
+        <div class="avater-wrapper">
+          <div class="avater-box">
+            <img :src="userAvater">
+          </div>
+          <div class="user-name">{{ user.userName }}</div>
         </div>
-        <div class="row2">
-          <span>&copy; 2019 | Graduation Project</span>
-          <br>
-          <span>Liu xiaoxiao 刘潇潇</span>
+        <div class="navs">
+          <ul>
+            <li :class="{'active': active==='home.album'}" @click="toHome">
+              <Icon type="md-images" size="22"/>&nbsp;&nbsp;&nbsp;相册
+            </li>
+            <li :class="{'active': active==='home.image'}" @click="toImage">
+              <Icon type="ios-image" size="22"/>&nbsp;&nbsp;&nbsp;照片
+            </li>
+            <li :class="{'active': active==='home.layoutShow'}" @click="toLayoutShow">
+              <Icon type="ios-apps" size="22"/>&nbsp;&nbsp;&nbsp;布局展示
+            </li>
+            <li :class="{'active': active==='$'}" @click="toImage">
+              <Icon type="ios-trash" size="22"/>&nbsp;&nbsp;&nbsp;回收站
+            </li>
+            <li :class="{'active': active==='$'}" @click="toImage">
+              <Icon type="ios-person" size="22"/>&nbsp;&nbsp;&nbsp;个人中心
+            </li>
+          </ul>
         </div>
       </div>
-    </footer>
+    </div>
+    <div class="template-content">
+      <div class="content-inner">
+        <router-view/>
+      </div>
+      <hr>
+      <footer>
+        <div class="footer-inner">
+          <div class="row1">
+            <a href="javascript:void(0)" class="a-qq"></a>
+            <a href="javascript:void(0)" class="a-weichat"></a>
+            <a href="javascript:void(0)" class="a-github"></a>
+          </div>
+          <div class="row2">
+            <span>&copy; 2019 | Graduation Project</span>
+            <br>
+            <span>Liu xiaoxiao 刘潇潇</span>
+          </div>
+        </div>
+      </footer>
+    </div>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      active: "" //home.album
+      active: "home.album",
+      user: {},
+      userAvater: "static/images/2.jpg"
     };
   },
+  created() {
+    this.getUserData();
+  },
   methods: {
+    getUserData() {
+      this.$http
+        .get("http://127.0.0.1:3000/getUserData", {
+          params: {
+            userId: localStorage.currentUser
+          }
+        })
+        .then(
+          res => {
+            this.user = res.data;
+            if (res.data.avater) {
+              this.userAvater = res.data.avater;
+            }
+          },
+          req => {
+            this.$Message.error("系统出错");
+          }
+        );
+    },
     toHome() {
       this.$router.push({ name: "home.album" });
     },
     toImage() {
-      this.$router.push({ name: "home.image"});
+      this.$router.push({ name: "home.image" });
+    },
+    toLayoutShow() {
+      this.$router.push({ name: "home.layoutShow", params:{entryKind: 1} });
     }
   },
   watch: {
     $route(to) {
       console.log(to.name);
-      this.active = to.name
+      this.active = to.name;
     }
   }
 };
 </script>
 
 <style lang="less">
-@import url('../assets/less/color.less');;
+@import url("../assets/less/color.less");
 .template-wrapper {
-  .top-navbar {
-    .logo {
-      text-align: center;
-      padding: 30px;
-      img {
-        width: auto;
-        height: auto;
-      }
-    }
-    .navs {
-      // background: #57b0ad;
-      // margin-top: 30px;
-      background: #2a394e;
-      padding: 15px 60px;
-      display: flex;
-      justify-content: center;
-      margin-bottom: 60px;
-      ul {
+  .side-navbar {
+    float: left;
+    width: 18%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow: hidden;
+    .side-inner {
+      color: white;
+      height: 100vh;
+      background: #393d49;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: -17px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+      .avater-wrapper {
         display: flex;
-        li {
-          border-right: 2px solid white;
-          color: @topnav-default;
-          font-size: 16px;
-          font-weight: 300;
-          padding-left: 30px;
-          padding-right: 30px;
-          transition: all 0.3s;
-          cursor: pointer;
-          &:last-child {
-            border-right: none;
-          }
-          &:hover {
-            color: @topnav-hover;
-          }
-          &.active {
-            color: @red-black;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding-top: 45px;
+        padding-bottom: 20px;
+        .avater-box {
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          overflow: hidden;
+          margin-bottom: 15px;
+        }
+        .user-name {
+          font-size: 14px;
+        }
+      }
+      .navs {
+        ul {
+          li {
+            color: white;
+            font-size: 14px;
+            // font-weight: 300;
+            transition: all 0.3s;
+            padding: 16px;
+            cursor: pointer;
+            &:last-child {
+              border-right: none;
+            }
+            &.active,
+            &:hover {
+              background: @demo-green;
+            }
           }
         }
       }
     }
   }
-  .inner {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 30px;
-    min-height: 70vh;
-    // width: 990px;
-    // border: 1px solid @red-jianshu;
+  .template-content {
+    float: right;
+    width: 82%;
+    padding: 30px 20px 10px 20px;
+    .content-inner {
+      min-height: 88vh;
+      width: 100%;
+      margin-bottom: 30px;
+    }
   }
   footer {
     width: 100%;
-    padding: 38px;
+    padding-top: 20px;
     text-align: center;
     .footer-inner {
       display: inline-block;

@@ -65,12 +65,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import url('../assets/less/color.less');
 .sign-in-wrapper {
   .logo {
     position: fixed;
     top: 40px;
     left: 40px;
-    color: #ea6f5a;
+    color: @demo-green;
     font-size: 50px;
     font-weight: 600;
   }
@@ -84,7 +85,7 @@ export default {
     border: 1px solid #ddd;
     border-radius: 3px;
     h5 {
-      color: #ea6f5a;
+      color: @demo-green;
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 30px;

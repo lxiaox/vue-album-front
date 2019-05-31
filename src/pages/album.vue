@@ -147,7 +147,7 @@ export default {
       btnDisalbed: false
     };
   },
-  mounted() {
+  created() {
     this.getAlbums();
   },
   methods: {
@@ -188,9 +188,9 @@ export default {
         this.$Message.error("相册名称不能为空");
         return;
       }
-      if(this.addAlbumName.length > 10) {
-        this.$Message.error('相册名称过长')
-        return
+      if (this.addAlbumName.length > 10) {
+        this.$Message.error("相册名称过长");
+        return;
       }
       this.btnDisalbed = true;
       this.$http
@@ -236,9 +236,9 @@ export default {
         this.$Message.error("相册名称不能为空");
         return;
       }
-     if(this.addAlbumName.length > 10) {
-        this.$Message.error('相册名称过长')
-        return
+      if (this.addAlbumName.length > 10) {
+        this.$Message.error("相册名称过长");
+        return;
       }
       this.btnDisalbed = true;
       this.$http
@@ -286,7 +286,7 @@ export default {
             this.getAlbums();
           },
           req => {
-            this.$Message.error('系统出错');
+            this.$Message.error("系统出错");
           }
         );
     }
@@ -309,17 +309,13 @@ export default {
   .album-box-wrapper {
     width: 100%;
     .album-box {
-      // border: 2px solid #57b0ad;
-      border: 1px solid @red-cv;
-      // border: 2px solid #fff;
+      border: 1px solid @demo-green;
       border-radius: 2px;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
       float: left;
-      width: 30.666%;
-      width: 30.6%;
-      width: 22%;
+      width: 27%;
       padding: 1px;
-      margin: 20px 15px;
+      margin: 30px 30px;
       position: relative;
       .album-cover {
         cursor: pointer;
@@ -336,8 +332,6 @@ export default {
       }
       .album-msg {
         padding-top: 2px;
-        // background: 1px solid #57b0ad;
-        // cursor: pointer;
         .album-name {
           float: left;
           padding: 10px 8px 10px 30px;
@@ -356,7 +350,7 @@ export default {
           text-align: center;
           width: 26%;
           height: 100%;
-          background: @red-cv;
+          background: @demo-green;
           font-size: 14px;
           color: #fff;
           padding: 6px 0;

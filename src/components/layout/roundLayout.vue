@@ -1,5 +1,6 @@
 <template>
   <div class="roundBox">
+    <div class="layout-name">旋转木马布局</div>
     <ul class="allImages">
       <li
         class="imageBox rotateIn"
@@ -8,7 +9,7 @@
         :key="`roundKey${index}`"
         :ref="`li`"
       >
-        <img :src="item.src" alt>
+        <img :src="item.imageData">
       </li>
     </ul>
     <a @click="slide('left')" class="prev"></a>
@@ -71,15 +72,15 @@ export default {
 <style lang="less" scoped>
 .roundBox {
   position: relative;
-  width: 1140px;
+  width: 100%;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 50px;
   overflow: hidden;
   ul.allImages {
     position: relative;
-    width: 90%;
-    height: 600px;
+    width: 72%;
+    height: 500px;
+    margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     li.imageBox {
@@ -97,8 +98,8 @@ export default {
     li.imageBox.position4, 
     li.imageBox.position5 {
       top: 5%;
-      width: 345px;
-      height: 200px;
+      width: 276px;
+      height: 160px;
       z-index: 0;
       opacity: 0.5;
     }
@@ -115,8 +116,8 @@ export default {
     li.imageBox.position1,
     li.imageBox.position3 {
       top: 20%;
-      width: 480px;
-      height: 285px;
+      width: 364px;
+      height: 228px;
       z-index: 1;
       opacity: 0.7;
     }
@@ -124,13 +125,13 @@ export default {
       left: 0;
     }
     li.imageBox.position3 {
-      left: 53%;
+      left: 55%;
     }
     li.imageBox.position2 {
-      width: 690px;
-      height: 385px;
+      width: 552px;
+      height: 308px;
       top: 30%;
-      left: 15%;
+      left: 16%;
       z-index: 2;
     }
   }
@@ -144,13 +145,13 @@ export default {
     z-index: 10;
   }
   a.prev {
-    left: 0;
-    top: 280px;
+    left: 40px;
+    top: 220px;
     background-image: url(../../../static/images/prev.png);
   }
   a.next {
-    right: 0;
-    top: 290px;
+    right: 40px;
+    top: 220px;
     background-image: url(../../../static/images/next.png);
   }
   a:hover {

@@ -9,7 +9,16 @@
       <span class="album-name">{{ viewAlbum.albumName }}</span>
       <span class="album-count">{{ viewAlbum.imageCounts }}张</span>
       <button class="add-image-button" @click="addImageBoxShow">
-        <Icon type="ios-images-outline" size="24"/>上传图片
+        <Icon type="ios-camera-outline" size="24"/>
+        上传图片
+      </button>
+      <button class="to-layout-show-button" @click="toLayoutShow">
+        <Icon type="ios-images-outline" size="22"/>
+        <!-- <Icon type="logo-instagram" size="24"/> -->
+        布局展示
+      </button>
+      <button class="to-back-button" @click="toBackPage">
+        返&nbsp;回
       </button>
     </div>
     <!-- 上传图片组件 -->
@@ -24,7 +33,7 @@
     <!-- 图片展示 -->
     <div class="all-images clearfix">
       <div
-        class="image-wrapper shrinkIn"
+        class="image-wrapper"
         v-for="(item, index) in images"
         :key="`square-image-Key${index}`"
       >
@@ -90,6 +99,7 @@ export default {
   data() {
     return {
       images: [],
+      imageSrc: 'static/images/image.png',
       noImageShow: false,
       ifAddImageBoxShow: false,
       dbclickMsg: "双击图片全屏浏览",
@@ -101,7 +111,7 @@ export default {
       btnDisalbed: false
     };
   },
-  mounted() {
+  created() {
     this.getImages();
     this.viewAlbum = JSON.parse(localStorage.viewAlbum);
   },
@@ -235,6 +245,12 @@ export default {
             this.$Message.error("系统出错");
           }
         );
+    },
+    toLayoutShow() {
+      this.$router.push({ name: 'home.layoutShow'})
+    },
+    toBackPage() {
+      window.history.back()
     }
   }
 };
@@ -261,6 +277,7 @@ export default {
       &.album-name {
         font-size: 22px;
         color: #000;
+        text-shadow: 2px 2px #bbb;
       }
       &.album-count {
         font-size: 14px;
@@ -271,14 +288,24 @@ export default {
       }
     }
     .add-image-button {
-      margin-left: 18px;
       position: absolute;
       top: 40px;
-      left: 170px;
+      left: 190px;
+      font-size: 16px;
+    }
+    .to-layout-show-button {
+      position: absolute;
+      top: 40px;
+      left: 340px;
+      font-size: 16px;
+    }
+    .to-back-button{
+      position: absolute;
+      top: 40px;
+      left: 490px;
       font-size: 16px;
     }
   }
-
   .add-image-wrapper {
     z-index: 1000;
     width: 100vw;
@@ -382,9 +409,8 @@ export default {
     width: 100%;
     padding-top: 40px;
     .image-wrapper {
-      border: 1px solid;
       padding: 15px 15px 0 15px;
-      width: 240px;
+      width: 20%;
       margin-bottom: 40px;
       position: relative;
       float: left;
@@ -392,7 +418,7 @@ export default {
       margin-right: 20px;
       box-shadow: @image-box-shadow;
       .image-box {
-        height: 200px;
+        height: 170px;
         img {
           width: 100%;
           height: 100%;
@@ -402,7 +428,7 @@ export default {
         }
       }
       .image-name-box {
-        width: 208px;
+        width: 100%;
         padding: 6px;
         text-align: center;
         font-size: 16px;

@@ -52,7 +52,8 @@ export default {
     return {
       selectedImages: [],
       loading: false,
-      msg: "选择图片上传"
+      msg: "选择图片上传",
+      uploadBatch: ""
     };
   },
   methods: {
@@ -79,8 +80,8 @@ export default {
     },
     uploadImages() {
       if (this.selectedImages.length === 0) {
-        this.$Message.error('请先选择图片')
-        return
+        this.$Message.error("请先选择图片");
+        return;
       }
       if (this.selectedImages.length > 20) {
         this.$Message.error("最多只能选择20张图片");
@@ -90,8 +91,32 @@ export default {
       this.selectedImages.forEach((item, index) => {
         item.ifUploadProgressShow = true;
       });
-      let uploadData = this.selectedImages;
-      this.uploadDataFn(this.selectedImages[0]);
+      this.getUploadNumber().then(success => {
+        this.uploadDataFn(this.selectedImages[0]);
+      });
+    },
+    getUploadNumber() {
+      return new Promise((resolve, reject) => {
+        this.$http
+          .get("http://127.0.0.1:3000/addUpload", {
+            params: {
+              userId: localStorage.currentUser,
+              albumId: JSON.parse(localStorage.viewAlbum).albumId,
+              uploadCounts: this.selectedImages.length
+            }
+          })
+          .then(
+            res => {
+              this.uploadBatch = res.data;
+              resolve();
+            },
+            req => {
+              this.uploadBatch = "";
+              console.log("未获取到批次号");
+              reject();
+            }
+          );
+      });
     },
     uploadDataFn(item) {
       var config = {
@@ -107,7 +132,8 @@ export default {
           {
             userId: localStorage.currentUser,
             albumId: JSON.parse(localStorage.viewAlbum).albumId,
-            image: item.data
+            image: item.data,
+            uploadNumber: this.uploadBatch
           },
           config
         )
@@ -131,6 +157,7 @@ export default {
     },
     cancel() {
       this.selectedImages = [];
+      this.uploadBatch = "";
       this.loading = false;
       this.$emit("hide-upload-box");
     }

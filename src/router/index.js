@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { signIn, signUp, template, album, albumView, image } from '@/pages'
+import { signIn, signUp, template, album, albumView, image, layoutShow } from '@/pages'
 import { invoicePage } from '@/components/invoice/InvoicePage'
 Vue.use(Router)
 
@@ -33,6 +33,10 @@ export default new Router({
       path: 'image',
       name: 'home.image',
       component: image
+    }, {
+      path: 'layoutShow',
+      name: 'home.layoutShow',
+      component: layoutShow
     }]
   }]
 })

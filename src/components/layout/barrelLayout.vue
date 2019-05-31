@@ -1,41 +1,43 @@
 <template>
+  <div class="barrel-wrapper">
+    <div class="layout-name">木桶布局</div>
     <div class="barrelBox fadeIn">
-        <img :src="item.src" alt="" v-for="(item, index) in images" :key="`barrelImage${index}`">
+      <img :src="item.imageData" alt v-for="(item, index) in images" :key="`barrelImage${index}`">
     </div>
+  </div>
 </template>
 
 <script>
 export default {
-    name: 'barrelLayout',
-    data () {
-        return {
-            
-        }
-    },
-    props: ['images'],
-}
+  name: "barrelLayout",
+  data() {
+    return {};
+  },
+  props: ["images"]
+};
 </script>
 
 <style lang="less" scoped>
-.barrelBox{
-    margin-top: 50px;
-    width: 1140px;
-    margin-left: auto;
-    margin-right: auto;
+.barrel-wrapper {
+  .barrelBox {
+    width: 100%;
+    margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
-    img{
-        width: auto;
-        height: 270px;
-        padding: 15px;
-        flex-grow: 1;
-        object-fit: cover;
-        object-position: center;
+    img {
+      width: auto;
+      height: 180px;
+      padding: 15px;
+      flex-grow: 1;
+      object-fit: cover;
+      object-position: center;
     }
-}
-.barrelBox::after{
-    display: block;
-    content: '';
-    flex-grow: 9999;
+
+    &::after {
+      display: block;
+      content: "";
+      flex-grow: 20;
+    }
+  }
 }
 </style>
