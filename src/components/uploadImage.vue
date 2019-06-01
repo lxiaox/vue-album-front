@@ -62,7 +62,8 @@ export default {
     },
     changePic() {
       const _that = this;
-      let results = this.$refs.inputImg.files;
+      let results = [...this.$refs.inputImg.files];
+      this.$refs.inputImg.value = ''
       Object.keys(results).forEach(key => {
         var reads = new FileReader();
         reads.readAsDataURL(results[key]);
@@ -157,6 +158,7 @@ export default {
     },
     cancel() {
       this.selectedImages = [];
+      this.$refs.inputImg.value = ''
       this.uploadBatch = "";
       this.loading = false;
       this.$emit("hide-upload-box");

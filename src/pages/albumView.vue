@@ -9,17 +9,14 @@
       <span class="album-name">{{ viewAlbum.albumName }}</span>
       <span class="album-count">{{ viewAlbum.imageCounts }}张</span>
       <button class="add-image-button" @click="addImageBoxShow">
-        <Icon type="ios-camera-outline" size="24"/>
-        上传图片
+        <Icon type="ios-camera-outline" size="24"/>上传图片
       </button>
       <button class="to-layout-show-button" @click="toLayoutShow">
         <Icon type="ios-images-outline" size="22"/>
         <!-- <Icon type="logo-instagram" size="24"/> -->
         布局展示
       </button>
-      <button class="to-back-button" @click="toBackPage">
-        返&nbsp;回
-      </button>
+      <button class="to-back-button" @click="toBackPage">返&nbsp;回</button>
     </div>
     <!-- 上传图片组件 -->
     <upload-image v-show="ifAddImageBoxShow" v-on:hide-upload-box="addImageHide"></upload-image>
@@ -32,11 +29,7 @@
     ></full-page-view>
     <!-- 图片展示 -->
     <div class="all-images clearfix">
-      <div
-        class="image-wrapper"
-        v-for="(item, index) in images"
-        :key="`square-image-Key${index}`"
-      >
+      <div class="image-wrapper" v-for="(item, index) in images" :key="`square-image-Key${index}`">
         <div class="image-box">
           <img :src="item.imageData" :title="dbclickMsg" @dblclick="fullpageViewShow(index)">
         </div>
@@ -99,7 +92,7 @@ export default {
   data() {
     return {
       images: [],
-      imageSrc: 'static/images/image.png',
+      imageSrc: "static/images/image.png",
       noImageShow: false,
       ifAddImageBoxShow: false,
       dbclickMsg: "双击图片全屏浏览",
@@ -141,7 +134,7 @@ export default {
         );
     },
     getOneAlbum() {
-       this.$http
+      this.$http
         .get("http://127.0.0.1:3000/getOneAlbum", {
           params: {
             albumId: JSON.parse(localStorage.viewAlbum).albumId
@@ -149,24 +142,21 @@ export default {
         })
         .then(
           res => {
-              let newAlbum = res.data;
-              this.viewAlbum = newAlbum;
-              console.log(this)
-              console.log(this.viewAlbum)
-              localStorage.viewAlbum = JSON.stringify(newAlbum);
+            let newAlbum = res.data;
+            this.viewAlbum = newAlbum;
+            localStorage.viewAlbum = JSON.stringify(newAlbum);
           },
           req => {
             this.$Message.error("系统出错,请稍后重试");
           }
         );
-
     },
     addImageBoxShow() {
       this.ifAddImageBoxShow = true;
     },
     addImageHide() {
       this.getImages();
-      this.getOneAlbum()
+      this.getOneAlbum();
       this.ifAddImageBoxShow = false;
     },
     fullpageViewShow(index) {
@@ -193,7 +183,6 @@ export default {
         return;
       }
       this.btnDisalbed = true;
-      console.log(this.currentEditImage);
       this.$http
         .post("http://127.0.0.1:3000/editImageMessage", {
           image: this.currentEditImage
@@ -222,7 +211,7 @@ export default {
         .then(
           res => {
             this.$Message.success("设置成功");
-            this.getOneAlbum()
+            this.getOneAlbum();
           },
           req => {
             this.$Message.error("系统出错");
@@ -239,7 +228,7 @@ export default {
           res => {
             this.$Message.success("删除成功");
             this.getImages();
-            this.getOneAlbum()
+            this.getOneAlbum();
           },
           req => {
             this.$Message.error("系统出错");
@@ -247,10 +236,10 @@ export default {
         );
     },
     toLayoutShow() {
-      this.$router.push({ name: 'home.layoutShow'})
+      this.$router.push({ name: "home.layoutShow" });
     },
     toBackPage() {
-      window.history.back()
+      window.history.back();
     }
   }
 };
@@ -299,7 +288,7 @@ export default {
       left: 340px;
       font-size: 16px;
     }
-    .to-back-button{
+    .to-back-button {
       position: absolute;
       top: 40px;
       left: 490px;

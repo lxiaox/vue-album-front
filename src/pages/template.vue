@@ -29,7 +29,7 @@
         </div>
       </div>
     </div>
-    <div class="template-content">
+    <div id="template-content" class="template-content">
       <div class="content-inner">
         <router-view/>
       </div>
@@ -95,7 +95,7 @@ export default {
   },
   watch: {
     $route(to) {
-      console.log(to.name);
+      // console.log(to.name);
       this.active = to.name;
     }
   }
