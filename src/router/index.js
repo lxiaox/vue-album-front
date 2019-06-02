@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import { signIn, signUp, template, album, albumView, image, layoutShow } from '@/pages'
+import { signIn, signUp, template, album, albumView, image, layoutShow, recycleBin, personalCenter } from '@/pages'
 import { invoicePage } from '@/components/invoice/InvoicePage'
 Vue.use(Router)
 
@@ -37,6 +37,14 @@ export default new Router({
       path: 'layoutShow',
       name: 'home.layoutShow',
       component: layoutShow
+    }, {
+      path: 'recycleBin',
+      name: 'home.recycleBin',
+      component: recycleBin
+    }, {
+      path: 'personalCenter',
+      name: 'home.personalCenter',
+      component: personalCenter
     }]
   }]
 })

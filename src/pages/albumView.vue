@@ -133,9 +133,9 @@ export default {
           }
         );
     },
-    getOneAlbum() {
+    getAlbum() {
       this.$http
-        .get("http://127.0.0.1:3000/getOneAlbum", {
+        .get("http://127.0.0.1:3000/getAlbum", {
           params: {
             albumId: JSON.parse(localStorage.viewAlbum).albumId
           }
@@ -156,7 +156,7 @@ export default {
     },
     addImageHide() {
       this.getImages();
-      this.getOneAlbum();
+      this.getAlbum();
       this.ifAddImageBoxShow = false;
     },
     fullpageViewShow(index) {
@@ -211,7 +211,7 @@ export default {
         .then(
           res => {
             this.$Message.success("设置成功");
-            this.getOneAlbum();
+            this.getAlbum();
           },
           req => {
             this.$Message.error("系统出错");
@@ -228,7 +228,7 @@ export default {
           res => {
             this.$Message.success("删除成功");
             this.getImages();
-            this.getOneAlbum();
+            this.getAlbum();
           },
           req => {
             this.$Message.error("系统出错");

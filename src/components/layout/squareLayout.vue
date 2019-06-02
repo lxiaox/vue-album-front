@@ -40,7 +40,6 @@ export default {
         height: 100%;
         object-fit: cover;
         object-position: center;
-        cursor: pointer;
       }
     }
   }

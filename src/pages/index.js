@@ -5,4 +5,6 @@ import album from '@/pages/album'
 import albumView from '@/pages/albumView'
 import image from '@/pages/image'
 import layoutShow from '@/pages/layoutShow'
-export {signIn,signUp,template,album,albumView,image,layoutShow}
+import recycleBin from '@/pages/recycleBin'
+import personalCenter from '@/pages/personalCenter'
+export {signIn,signUp,template,album,albumView,image,layoutShow,recycleBin,personalCenter}

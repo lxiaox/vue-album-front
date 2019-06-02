@@ -19,10 +19,10 @@
             <li :class="{'active': active==='home.layoutShow'}" @click="toLayoutShow">
               <Icon type="ios-apps" size="22"/>&nbsp;&nbsp;&nbsp;布局展示
             </li>
-            <li :class="{'active': active==='$'}" @click="toImage">
+            <li :class="{'active': active==='home.recycleBin'}" @click="toRecycleBin">
               <Icon type="ios-trash" size="22"/>&nbsp;&nbsp;&nbsp;回收站
             </li>
-            <li :class="{'active': active==='$'}" @click="toImage">
+            <li :class="{'active': active==='home.personalCenter'}" @click="toPersonalCenter">
               <Icon type="ios-person" size="22"/>&nbsp;&nbsp;&nbsp;个人中心
             </li>
           </ul>
@@ -90,7 +90,13 @@ export default {
       this.$router.push({ name: "home.image" });
     },
     toLayoutShow() {
-      this.$router.push({ name: "home.layoutShow", params:{entryKind: 1} });
+      this.$router.push({ name: "home.layoutShow", params: { entryKind: 1 } });
+    },
+    toRecycleBin() {
+      this.$router.push({ name: "home.recycleBin" });
+    },
+    toPersonalCenter() {
+      this.$router.push({ name: "home.personalCenter" });
     }
   },
   watch: {
