@@ -40,10 +40,14 @@ export default {
       this.$router.push({ name: "sign_in" });
     },
     signUp() {
-      let regExp = new RegExp(/^[a-zA-Z0-9]{3,21}$/); //(/^[\w]{3,21}$/)
+      let regExp = new RegExp(/^[a-zA-Z0-9]{6,21}$/); //(/^[\w]{3,21}$/)
       this.userName = this.userName.trim();
       if (!this.userName) {
         this.$Message.error("用户名不能为空");
+        return;
+      }
+      if (this.userName.length > 16) {
+        this.$Message.error("用户名长度不能大于16");
         return;
       }
       if (!this.password) {
@@ -55,7 +59,7 @@ export default {
         return;
       }
       if (!regExp.test(this.password)) {
-        this.$Message.error("密码应由3至21位字母或数字组成");
+        this.$Message.error("密码应由6~21位字母或数字组成");
         return;
       }
       if (this.password !== this.passwordConfirmation) {
@@ -83,7 +87,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url('../assets/less/color.less');
+@import url("../assets/less/color.less");
 .sign-in-wrapper {
   .logo {
     position: fixed;

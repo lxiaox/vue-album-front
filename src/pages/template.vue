@@ -62,6 +62,16 @@ export default {
   },
   created() {
     this.getUserData();
+    if (localStorage.activeRouter) {
+      this.active = localStorage.activeRouter;
+    }
+  },
+  mounted() {
+    if (!localStorage.currentUser) {
+      this.$Message.error("用户未登录，请先登录");
+      localStorage.activeRouter = "";
+      this.$router.push({ name: "sign_in" });
+    }
   },
   methods: {
     getUserData() {
@@ -74,9 +84,10 @@ export default {
         .then(
           res => {
             this.user = res.data;
-            if (res.data.avater) {
+            if (this.user.avater) {
               this.userAvater = res.data.avater;
             }
+            localStorage.userData = JSON.stringify(this.user);
           },
           req => {
             this.$Message.error("系统出错");
@@ -101,8 +112,8 @@ export default {
   },
   watch: {
     $route(to) {
-      // console.log(to.name);
       this.active = to.name;
+      localStorage.activeRouter = to.name;
     }
   }
 };

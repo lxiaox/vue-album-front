@@ -55,6 +55,7 @@ export default {
       queryCount: 0,
       queryAmount: 3,
       loading: true,
+      repeatLoading: true,
       fullPageImages: [],
       ifFullpageView: false,
       fullImageIndex: 0,
@@ -68,10 +69,11 @@ export default {
     }
     setTimeout(() => {
       document.onscroll = function() {
+        if(!_this.repeatLoading) return
         if (
           document.documentElement.scrollTop +
             document.documentElement.clientHeight >=
-          document.documentElement.scrollHeight
+          document.documentElement.scrollHeight - 1
         ) {
           if (_this.loading) _this.getUploadsTree(_this.queryCount++);
         }
@@ -80,6 +82,7 @@ export default {
   },
   methods: {
     getUploadsTree(count) {
+      this.repeatLoading = false
       this.$http
         .get("http://127.0.0.1:3000/getUploadsTree", {
           params: {
@@ -90,8 +93,9 @@ export default {
         })
         .then(
           res => {
+            this.repeatLoading = true
             if (res.status === 201) {
-              if (this.queryCoun === 1) {
+              if (this.queryCount === 1) {
                 this.noImageShow = true;
                 this.imagesTree = [];
               }
