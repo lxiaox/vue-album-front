@@ -16,7 +16,7 @@
     </div>
     <div class="row name-row">
       <label>用户名</label>
-      <input type="text" v-model="newName">
+      <input type="text" v-model="user.userName">
     </div>
     <div class="row password-modify-row">
       <label>修改密码</label>
@@ -34,7 +34,7 @@
     </div>
     <div class="row save-row">
       <button class="save-button" @click="saveUserData">保存更改</button>
-      <button class="cancel-button">取&nbsp;&nbsp;消</button>
+      <button class="cancel-button" @click="cancel">取&nbsp;&nbsp;消</button>
     </div>
     <div class="row exit-row" @click="signOut">
       <button>退出登录</button>
@@ -48,7 +48,6 @@ export default {
     return {
       user: {},
       userAvater: "static/images/2.jpg",
-      newName: "",
       oldPassword: "",
       newPassword: "",
       outflag: false
@@ -59,7 +58,6 @@ export default {
     if (this.user.avater) {
       this.userAvater = this.user.avater;
     }
-    this.newName = this.user.userName;
   },
   methods: {
     changeAvater() {
@@ -78,11 +76,11 @@ export default {
     },
     saveUserData() {
       this.oldPasswordMd5 = this.$MD5(this.oldPassword);
-      if (!this.newName) {
+      if (!this.user.userName) {
         this.$Message.error("用户名不能为空");
         return;
       }
-      if (this.newName.length > 16) {
+      if (this.user.userName.length > 16) {
         this.$Message.error("用户名长度不能大于16");
         return;
       }
@@ -105,10 +103,7 @@ export default {
           this.user.newPassword = this.$MD5(this.newPassword);
         }
       }
-      if (!this.newPassword) {
-        this.oldPassword = "";
-      }
-      this.user.newName = this.newName;
+      
       this.$http
         .post("http://127.0.0.1:3000/saveUserData", {
           user: this.user
@@ -120,34 +115,17 @@ export default {
               this.signOut()
             } else {
               this.$Message.success("保存成功");
-              this.getUserData()
               this.$parent.getUserData()
             }
           },
           req => {
             this.$Message.error(req.response.data);
+            console.log(req);
           }
         );
     },
-    getUserData() {
-      this.$http
-        .get("http://127.0.0.1:3000/getUserData", {
-          params: {
-            userId: localStorage.currentUser
-          }
-        })
-        .then(
-          res => {
-            this.user = res.data;
-            if (this.user.avater) {
-              this.userAvater = this.user.avater;
-            }
-            localStorage.userData = JSON.stringify(this.user);
-          },
-          req => {
-            this.$Message.error("系统出错");
-          }
-        );
+    cancel(){
+      window.history.back()
     },
     signOut(){
       localStorage.currentUser = ''
