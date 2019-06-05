@@ -1,13 +1,16 @@
 <template>
   <div class="template-wrapper">
+    <!-- 侧边栏菜单 -->
     <div class="side-navbar">
       <div class="side-inner">
+        <!-- 头像/用户名 -->
         <div class="avater-wrapper">
           <div class="avater-box">
             <img :src="userAvater">
           </div>
           <div class="user-name">{{ user.userName }}</div>
         </div>
+        <!-- 菜单 -->
         <div class="navs">
           <ul>
             <li :class="{'active': active==='home.album'}" @click="toHome">
@@ -29,11 +32,13 @@
         </div>
       </div>
     </div>
+    <!-- 内容 -->
     <div id="template-content" class="template-content">
       <div class="content-inner">
         <router-view/>
       </div>
       <hr>
+      <!-- 底部信息 -->
       <footer>
         <div class="footer-inner">
           <div class="row1">

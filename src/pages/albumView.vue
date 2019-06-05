@@ -13,7 +13,6 @@
       </button>
       <button class="to-layout-show-button" @click="toLayoutShow">
         <Icon type="ios-images-outline" size="22"/>
-        <!-- <Icon type="logo-instagram" size="24"/> -->
         布局展示
       </button>
       <button class="to-back-button" @click="toBackPage">返&nbsp;回</button>
@@ -30,9 +29,11 @@
     <!-- 图片展示 -->
     <div class="all-images clearfix">
       <div class="image-wrapper" v-for="(item, index) in images" :key="`square-image-Key${index}`">
+        <!-- 照片图 -->
         <div class="image-box">
           <img :src="item.imageData" :title="dbclickMsg" @dblclick="fullpageViewShow(index)">
         </div>
+        <!-- 照片名称 -->
         <div class="image-name-box" :title="item.imageName">{{ item.imageName }}</div>
         <!-- 下拉菜单 -->
         <Dropdown @on-click="handleDropDownClick($event, item)" class="drop-menu">

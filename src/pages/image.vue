@@ -1,16 +1,19 @@
 <template>
   <div class="image-page-wrapper">
+    <!-- 上传记录 -->
     <div class="uploads-wrapper">
       <div
         class="upload-item clearfix"
         v-for="(item, index) in imagesTree"
         :key="`upload-key${index}`"
       >
+        <!-- 上传信息 -->
         <div class="upload-msg">
           <span>{{ item.uploadDate }}</span>
           <span>上传至相册:</span>
           <span class="album-name" @click="toAlbumView(item.albumId)">&lt; {{ item.albumName }} &gt;</span>
         </div>
+        <!-- 上传照片 -->
         <div class="upload-images-wrapper clearfix">
           <div
             @click="fullPageView(item.imagesArr, i)"
@@ -22,6 +25,7 @@
             <img :src="img.imageData">
           </div>
         </div>
+        <!-- 删除按钮 -->
         <div class="upload-delete">
           <span class="delete-btn" @click="deleteUpload(item)">删除</span>
           <!-- <span>(包括照片)</span> -->
@@ -69,7 +73,7 @@ export default {
     }
     setTimeout(() => {
       document.onscroll = function() {
-        if(!_this.repeatLoading) return
+        if (!_this.repeatLoading) return;
         if (
           document.documentElement.scrollTop +
             document.documentElement.clientHeight >=
@@ -82,7 +86,7 @@ export default {
   },
   methods: {
     getUploadsTree(count) {
-      this.repeatLoading = false
+      this.repeatLoading = false;
       this.$http
         .get("http://127.0.0.1:3000/getUploadsTree", {
           params: {
@@ -93,7 +97,7 @@ export default {
         })
         .then(
           res => {
-            this.repeatLoading = true
+            this.repeatLoading = true;
             if (res.status === 201) {
               if (this.queryCount === 1) {
                 this.noImageShow = true;

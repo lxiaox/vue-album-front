@@ -1,31 +1,6 @@
 <template>
   <div class="container">
-    <!-- 布局切换 -->
-    <!-- <div class="setLayoutBox">
-      <ul class="selectLayout">
-        <li class="selectLayoutMenu">MENU</li>
-        <li @click="layout='square'" :class="{layoutActive: layout==='square'}">All Images</li>
-        <li
-          @click="layout=`puzzle${puzzleNumber}`;ifPuzzleItemShow=!ifPuzzleItemShow;"
-          :class="{layoutActive: layout.slice(0,6)==='puzzle'}"
-        >
-          Puzzle
-          <Icon :class="{'rotate': ifPuzzleItemShow}" type="ios-arrow-down"/>
-        </li>
-        <li
-          class="puzzleItem"
-          :class="{layoutActive: layout===`puzzle${item}`}"
-          v-for="item in 6"
-          :key="`puzzleKey${item}`"
-          v-show="ifPuzzleItemShow"
-          @click="puzzleNumber=item;layout=`puzzle${puzzleNumber}`"
-        >puzzle{{ item }}</li>
-        <li @click="layout='waterfall'" :class="{layoutActive: layout==='waterfall'}">Waterfall</li>
-        <li @click="layout='barrel'" :class="{layoutActive: layout==='barrel'}">Barrel</li>
-        <li @click="layout='round'" :class="{layoutActive: layout==='round'}">Round</li>
-        <li @click="layout='ccordion'" :class="{layoutActive: layout==='ccordion'}">Ccordion</li>
-      </ul>
-    </div>-->
+    <!-- 切换布局按钮 -->
     <Dropdown class="switch-layout" @on-click="handleSwitchLayout($event)">
       <button>
         布局切换
@@ -41,16 +16,17 @@
             <Icon type="ios-arrow-forward"></Icon>
           </DropdownItem>
           <DropdownMenu slot="list">
-            <DropdownItem v-for="(item,index) in 6" 
-            :key="`drop-item-${index}`" 
-            :name="`puzzle${item}`"> {{ item }}张拼图</DropdownItem>
+            <DropdownItem
+              v-for="(item,index) in 6"
+              :key="`drop-item-${index}`"
+              :name="`puzzle${item}`"
+            >{{ item }}张拼图</DropdownItem>
           </DropdownMenu>
         </Dropdown>
         <DropdownItem name="round">旋转木马布局</DropdownItem>
         <DropdownItem name="ccordion">手风琴布局</DropdownItem>
       </DropdownMenu>
     </Dropdown>
-
     <!-- layout -->
     <!-- puzzle有1-5 所以要传layout-->
     <puzzle-layout
@@ -146,8 +122,8 @@ export default {
       window.history.back();
     },
     handleSwitchLayout(e) {
-      if(e === 'puzzle'){
-        return
+      if (e === "puzzle") {
+        return;
       }
       this.layout = e;
     }

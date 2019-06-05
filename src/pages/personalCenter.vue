@@ -1,5 +1,6 @@
 <template>
   <div class="person-center-page">
+    <!-- 头像 -->
     <div class="row avater-row clearfix">
       <div class="avater-content-box">
         <img :src="userAvater">
@@ -14,6 +15,7 @@
         @change="changeAvater2"
       >
     </div>
+    <!-- 用户名 -->
     <div class="row name-row">
       <label>用户名</label>
       <input type="text" v-model="user.userName">
@@ -23,6 +25,7 @@
       <input class="old-password" type="text" v-model="oldPassword" placeholder="旧密码">
       <input class="new-password" type="text" v-model="newPassword" placeholder="新密码，6~16，字母或数字">
     </div>
+    <!-- 性别 -->
     <div class="row gender-row">
       <label class="gender-title">性别</label>
       <label class="gender-item">
@@ -32,10 +35,12 @@
         <input name="gender" v-model="user.gender" value="female" type="radio">女
       </label>
     </div>
+    <!-- 保存/取消 -->
     <div class="row save-row">
       <button class="save-button" @click="saveUserData">保存更改</button>
       <button class="cancel-button" @click="cancel">取&nbsp;&nbsp;消</button>
     </div>
+    <!-- 退出登录 -->
     <div class="row exit-row" @click="signOut">
       <button>退出登录</button>
     </div>
@@ -103,7 +108,7 @@ export default {
           this.user.newPassword = this.$MD5(this.newPassword);
         }
       }
-      
+
       this.$http
         .post("http://127.0.0.1:3000/saveUserData", {
           user: this.user
@@ -112,10 +117,10 @@ export default {
           res => {
             if (this.outflag) {
               this.$Message.success("修改成功，请重新登录");
-              this.signOut()
+              this.signOut();
             } else {
               this.$Message.success("保存成功");
-              this.$parent.getUserData()
+              this.$parent.getUserData();
             }
           },
           req => {
@@ -124,13 +129,13 @@ export default {
           }
         );
     },
-    cancel(){
-      window.history.back()
+    cancel() {
+      window.history.back();
     },
-    signOut(){
-      localStorage.currentUser = ''
-      localStorage.activeRouter = ''
-      this.$router.push({name: 'sign_in'})
+    signOut() {
+      localStorage.currentUser = "";
+      localStorage.activeRouter = "";
+      this.$router.push({ name: "sign_in" });
     }
   }
 };
