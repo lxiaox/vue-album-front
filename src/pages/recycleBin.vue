@@ -160,6 +160,7 @@ export default {
             if (res.status === 200) {
               this.deletedAlbumsShow = true;
               this.deletedAlbums = res.data;
+              this.allAlbumsId = []
               this.deletedAlbums.forEach(item => {
                 this.allAlbumsId.push(item.albumId);
               });
@@ -185,6 +186,7 @@ export default {
             if (res.status === 200) {
               this.deletedImagesShow = true;
               this.deletedImages = res.data;
+              this.allImagesId = []
               this.deletedImages.forEach(item => {
                 this.allImagesId.push(item.imageId);
               });

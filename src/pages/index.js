@@ -7,4 +7,4 @@ import image from '@/pages/image'
 import layoutShow from '@/pages/layoutShow'
 import recycleBin from '@/pages/recycleBin'
 import personalCenter from '@/pages/personalCenter'
-export {signIn,signUp,template,album,albumView,image,layoutShow,recycleBin,personalCenter}
+export {signIn,signUp,template,album,albumView,image,layoutShow,recycleBin,personalCenter,invoicePage}

@@ -77,7 +77,7 @@ export default {
         if (
           document.documentElement.scrollTop +
             document.documentElement.clientHeight >=
-          document.documentElement.scrollHeight - 1
+          document.documentElement.scrollHeight - 10
         ) {
           if (_this.loading) _this.getUploadsTree(_this.queryCount++);
         }
@@ -149,6 +149,7 @@ export default {
       this.ifFullpageView = false;
     },
     deleteUpload(uploadItem) {
+      console.log(uploadItem)
       this.$http
         .post("http://127.0.0.1:3000/deleteUpload", {
           uploadId: uploadItem.uploadId

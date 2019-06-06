@@ -92,11 +92,11 @@ export default {
       this.selectedImages.forEach((item, index) => {
         item.ifUploadProgressShow = true;
       });
-      this.getUploadNumber().then(success => {
+      this.getUploadId().then(success => {
         this.uploadDataFn(this.selectedImages[0]);
       });
     },
-    getUploadNumber() {
+    getUploadId() {
       return new Promise((resolve, reject) => {
         this.$http
           .get("http://127.0.0.1:3000/addUpload", {
@@ -134,7 +134,7 @@ export default {
             userId: localStorage.currentUser,
             albumId: JSON.parse(localStorage.viewAlbum).albumId,
             image: item.data,
-            uploadNumber: this.uploadBatch
+            uploadId: this.uploadBatch
           },
           config
         )

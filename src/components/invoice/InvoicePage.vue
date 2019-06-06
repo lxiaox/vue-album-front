@@ -37,13 +37,8 @@ export default {
 
 <style lang="less" scoped>
 .invoiceContainer{
-    width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 30px;
-    margin-bottom: 200px;
-    padding-top: 20px;
-    padding-left: 60px;
+    width: 100%;
+    padding: 30px 0 40px 50px;
     overflow: hidden;
 }
 </style>

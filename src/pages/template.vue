@@ -28,6 +28,18 @@
             <li :class="{'active': active==='home.personalCenter'}" @click="toPersonalCenter">
               <Icon type="ios-person" size="22"/>&nbsp;&nbsp;&nbsp;个人中心
             </li>
+            <li @click="ifMoreShow=!ifMoreShow">
+              <Icon type="md-more" size="22"/>&nbsp;&nbsp;&nbsp;更多
+              <Icon class="more-arrow" type="ios-arrow-forward" v-show="!ifMoreShow" />
+              <Icon class="more-arrow" type="ios-arrow-down" v-show="ifMoreShow" />
+            </li>
+            <li :class="{'active': active==='home.ivoicePage'}" 
+            class="more-sub-nav" v-show="ifMoreShow" @click="toInvoicePage">
+              e税云相关
+            </li>
+            <li class="more-sub-nav sign-out-nav" v-show="ifMoreShow" @click="signOut">
+              退出登录 <Icon type="ios-log-out" size="18" />
+            </li>
           </ul>
         </div>
       </div>
@@ -62,21 +74,21 @@ export default {
     return {
       active: "home.album",
       user: {},
-      userAvater: "static/images/2.jpg"
+      userAvater: "static/images/github.jpg",
+      ifMoreShow: false
     };
-  },
-  created() {
-    this.getUserData();
-    if (localStorage.activeRouter) {
-      this.active = localStorage.activeRouter;
-    }
   },
   mounted() {
     if (!localStorage.currentUser) {
       this.$Message.error("用户未登录，请先登录");
       localStorage.activeRouter = "";
       this.$router.push({ name: "sign_in" });
+      return;
     }
+    if (localStorage.activeRouter) {
+      this.active = localStorage.activeRouter;
+    }
+    this.getUserData();
   },
   methods: {
     getUserData() {
@@ -113,10 +125,19 @@ export default {
     },
     toPersonalCenter() {
       this.$router.push({ name: "home.personalCenter" });
+    },
+    toInvoicePage() {
+      this.$router.push({ name: "home.invoicePage" });
+    },
+    signOut() {
+      localStorage.currentUser = "";
+      localStorage.activeRouter = "";
+      this.$router.push({ name: "sign_in" });
     }
   },
   watch: {
     $route(to) {
+      console.log(to.name)
       this.active = to.name;
       localStorage.activeRouter = to.name;
     }
@@ -178,6 +199,16 @@ export default {
             &.active,
             &:hover {
               background: @demo-green;
+            }
+            .more-arrow{
+              margin-left: 5px;
+            }
+            &.more-sub-nav {
+              padding-left: 40px;
+              font-size: 13px;
+            }
+            &.sign-out-nav{
+              margin-bottom: 20px;
             }
           }
         }

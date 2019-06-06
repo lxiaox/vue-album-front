@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import { signIn, signUp, template, album, albumView, image, layoutShow, recycleBin, personalCenter } from '@/pages'
-import { invoicePage } from '@/components/invoice/InvoicePage'
+import invoicePage from '@/components/invoice/InvoicePage'
 Vue.use(Router)
 
 export default new Router({
@@ -45,6 +45,10 @@ export default new Router({
       path: 'personalCenter',
       name: 'home.personalCenter',
       component: personalCenter
+    }, {
+      path: 'invoicePage',
+      name: 'home.invoicePage',
+      component: invoicePage
     }]
   }]
 })
