@@ -35,7 +35,7 @@
             </li>
             <li :class="{'active': active==='home.ivoicePage'}" 
             class="more-sub-nav" v-show="ifMoreShow" @click="toInvoicePage">
-              e税云相关
+              e 税云相关
             </li>
             <li class="more-sub-nav sign-out-nav" v-show="ifMoreShow" @click="signOut">
               退出登录 <Icon type="ios-log-out" size="18" />

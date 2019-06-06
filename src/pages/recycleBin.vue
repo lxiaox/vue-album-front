@@ -105,6 +105,28 @@
       <br>
       <span>回收站为空</span>
     </div>
+    <!-- 正在加载遮罩 -->
+    <div class="loading-wrapper" v-show="ifLoadingShow1 || ifLoadingShow2">
+      <div class="loading-box">
+        <img src="static/images/loading.gif">
+      </div>
+    </div>
+    <!-- 清空回收站 -->
+    <button @click="clearBin" class="clear-bin">
+      清空回收站
+      <Icon type="ios-trash-outline" size="19"/>
+    </button>
+    <!-- 删除提示 -->
+    <Modal
+      class="clear-top-box"
+      v-model="modalClear"
+      title="操作提示"
+      width="400"
+      :styles="{top: '240px'}"
+      @on-ok="confirmClearBin"
+    >
+      <p>确认清空回收站所有相册及照片?</p>
+    </Modal>
   </div>
 </template>
 
@@ -135,7 +157,12 @@ export default {
       noAlbumTipShow: false,
       selectAlbumId: "",
       albums: {},
-      albumsList: []
+      albumsList: [],
+      // 加载动画
+      ifLoadingShow1: false,
+      ifLoadingShow2: false,
+      // 清空
+      modalClear: false
     };
   },
   mounted() {
@@ -146,56 +173,64 @@ export default {
   methods: {
     // 初始化
     getDeletedAlbums() {
-      this.$http
-        .get("http://127.0.0.1:3000/getDeletedAlbums", {
-          params: { userId: localStorage.currentUser }
-        })
-        .then(
-          res => {
-            if (res.status === 201) {
-              this.deletedAlbumsShow = false;
-              this.deletedAlbums = [];
-              this.allAlbumsId = [];
+      return new Promise(resolve => {
+        this.$http
+          .get("http://127.0.0.1:3000/getDeletedAlbums", {
+            params: { userId: localStorage.currentUser }
+          })
+          .then(
+            res => {
+              if (res.status === 201) {
+                this.deletedAlbumsShow = false;
+                this.deletedAlbums = [];
+                this.allAlbumsId = [];
+              }
+              if (res.status === 200) {
+                this.deletedAlbumsShow = true;
+                this.deletedAlbums = res.data;
+                this.allAlbumsId = [];
+                this.deletedAlbums.forEach(item => {
+                  this.allAlbumsId.push(item.albumId);
+                });
+              }
+              resolve();
+            },
+            req => {
+              this.$Message.error("系统出错,请稍后重试");
+              resolve();
             }
-            if (res.status === 200) {
-              this.deletedAlbumsShow = true;
-              this.deletedAlbums = res.data;
-              this.allAlbumsId = []
-              this.deletedAlbums.forEach(item => {
-                this.allAlbumsId.push(item.albumId);
-              });
-            }
-          },
-          req => {
-            this.$Message.error("系统出错,请稍后重试");
-          }
-        );
+          );
+      });
     },
     getDeletedImages() {
-      this.$http
-        .get("http://127.0.0.1:3000/getDeletedImages", {
-          params: { userId: localStorage.currentUser }
-        })
-        .then(
-          res => {
-            if (res.status === 201) {
-              this.deletedImagesShow = false;
-              this.deletedImages = [];
-              this.allImagesId = [];
+      return new Promise(resolve => {
+        this.$http
+          .get("http://127.0.0.1:3000/getDeletedImages", {
+            params: { userId: localStorage.currentUser }
+          })
+          .then(
+            res => {
+              if (res.status === 201) {
+                this.deletedImagesShow = false;
+                this.deletedImages = [];
+                this.allImagesId = [];
+              }
+              if (res.status === 200) {
+                this.deletedImagesShow = true;
+                this.deletedImages = res.data;
+                this.allImagesId = [];
+                this.deletedImages.forEach(item => {
+                  this.allImagesId.push(item.imageId);
+                });
+              }
+              resolve();
+            },
+            req => {
+              this.$Message.error("系统出错,请稍后重试");
+              resolve();
             }
-            if (res.status === 200) {
-              this.deletedImagesShow = true;
-              this.deletedImages = res.data;
-              this.allImagesId = []
-              this.deletedImages.forEach(item => {
-                this.allImagesId.push(item.imageId);
-              });
-            }
-          },
-          req => {
-            this.$Message.error("系统出错,请稍后重试");
-          }
-        );
+          );
+      });
     },
     // 全选
     handleCheckAllAlbums() {
@@ -251,6 +286,7 @@ export default {
         this.allImagesFlag = false;
       }
     },
+
     // 还原相册
     reAddAlbums() {
       if (this.checkedAlbums.length === 0) {
@@ -262,6 +298,7 @@ export default {
       });
       this.checkedAlbumsLength = this.checkedAlbums.length;
       this.checkedAlbums = [];
+      this.ifLoadingShow = true;
       this.someAlbumsFlag = false;
       this.allAlbumsFlag = false;
     },
@@ -272,10 +309,12 @@ export default {
         })
         .then(
           res => {
-            this.getDeletedAlbums();
-            this.getDeletedImages();
             this.reAddAlbumsCount = this.reAddAlbumsCount + 1;
             if (this.reAddAlbumsCount === this.checkedAlbumsLength) {
+              this.getDeletedAlbums().then(() => {
+                this.ifLoadingShow = false;
+              });
+              this.reAddImagesCount = 0;
               this.$Message.success("还原相册完成");
             }
           },
@@ -284,8 +323,6 @@ export default {
           }
         );
     },
-    // 清除相册
-    clearAlbums() {},
 
     // 还原照片
     reAddImages() {
@@ -335,6 +372,7 @@ export default {
       });
       this.checkedImagesLength = this.checkedImages.length;
       this.checkedImages = [];
+      this.ifLoadingShow = true;
       this.someImagesFlag = false;
       this.allImagesFlag = false;
     },
@@ -346,10 +384,12 @@ export default {
         })
         .then(
           res => {
-            this.getDeletedImages();
-            this.cancelSelectAlbum();
             this.reAddImagesCount = this.reAddImagesCount + 1;
             if (this.reAddImagesCount === this.checkedImagesLength) {
+              this.getDeletedImages().then(() => {
+                this.ifLoadingShow = false;
+              });
+              this.reAddImagesCount = 0;
               this.$Message.success("还原照片完成");
             }
           },
@@ -361,8 +401,94 @@ export default {
     goAlbumPage() {
       this.$router.push({ name: "home.album" });
     },
+
+    // 清除相册
+    clearAlbums() {
+      if (this.checkedAlbums.length === 0) {
+        this.$Message.warning("请先选择要删除的相册");
+        return;
+      }
+      this.checkedAlbums.forEach(albumId => {
+        this.clearAlbum(albumId);
+      });
+      this.checkedAlbumsLength = this.checkedAlbums.length;
+      this.checkedAlbums = [];
+      this.ifLoadingShow1 = true;
+      this.someAlbumsFlag = false;
+      this.allAlbumsFlag = false;
+    },
+    clearAlbum(albumId) {
+      this.$http
+        .post("http://127.0.0.1:3000/clearAlbum", {
+          albumId: albumId
+        })
+        .then(
+          res => {
+            this.reAddAlbumsCount = this.reAddAlbumsCount + 1;
+            if (this.reAddAlbumsCount === this.checkedAlbumsLength) {
+              this.getDeletedAlbums().then(() => {
+                this.ifLoadingShow1 = false;
+              });
+              this.reAddImagesCount = 0;
+              this.$Message.success("删除相册完成");
+            }
+          },
+          req => {
+            this.$Message.error("系统出错");
+          }
+        );
+    },
     // 清除照片
-    clearImages() {}
+    clearImages() {
+      if (this.checkedImages.length === 0) {
+        this.$Message.warning("请先选择要删除的照片");
+        return;
+      }
+      this.checkedImages.forEach(imageId => {
+        this.clearImage(imageId);
+      });
+      this.checkedImagesLength = this.checkedImages.length;
+      this.checkedImages = [];
+      this.ifLoadingShow2 = true;
+      this.someImagesFlag = false;
+      this.allImagesFlag = false;
+    },
+    clearImage(imageId) {
+      this.$http
+        .post("http://127.0.0.1:3000/clearImage", {
+          imageId: imageId
+        })
+        .then(
+          res => {
+            this.reAddImagesCount = this.reAddImagesCount + 1;
+            if (this.reAddImagesCount === this.checkedImagesLength) {
+              this.getDeletedImages().then(() => {
+                this.ifLoadingShow2 = false;
+              });
+              this.reAddImagesCount = 0;
+              this.$Message.success("删除照片完成");
+            }
+          },
+          req => {
+            this.$Message.error("系统出错");
+          }
+        );
+    },
+
+    // 清空
+    clearBin() {
+      this.modalClear = true;
+    },
+    confirmClearBin() {
+      this.handleCheckAllAlbums();
+      this.handleCheckAllImages();
+      if (this.checkedAlbums.length > 0) {
+        this.clearAlbums();
+      }
+      if (this.checkedImages.length > 0) {
+        this.clearImages();
+      }
+    }
   }
 };
 </script>
@@ -371,15 +497,16 @@ export default {
 .recycle-bin-page {
   padding: 0 20px;
   font-size: 14px;
-  button {
-    padding: 3px 5px;
-    border-radius: 3px;
-    &.re-add {
-      margin-right: 20px;
-      margin-left: 10px;
-    }
-  }
+  position: relative;
   .bin-wrapper {
+    button {
+      padding: 3px 5px;
+      border-radius: 3px;
+      &.re-add {
+        margin-right: 20px;
+        margin-left: 10px;
+      }
+    }
     &.album-bin-wrapper {
       margin-bottom: 10px;
     }
@@ -502,6 +629,28 @@ export default {
         }
       }
     }
+  }
+  .loading-wrapper {
+    z-index: 1000;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.2);
+    .loading-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%);
+      width: 25px;
+      height: 25px;
+    }
+  }
+  .clear-bin {
+    position: absolute;
+    top: 5px;
+    right: 10px;
   }
 }
 </style>
