@@ -81,7 +81,7 @@
       </div>
     </div>
     <!-- 无照片显示 -->
-    <div class="nothing-msg" v-show="noImageShow">
+    <div class="nothing-msg nothing-msg1" v-show="noImageShow">
       <i class="iconfont icon-kong"></i>
       <br>
       <span @click="addImageBoxShow">还没有图片，去添加</span>

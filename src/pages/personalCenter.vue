@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       user: {},
-      userAvater: "static/images/2.jpg",
+      userAvater: "static/images/github.png",
       oldPassword: "",
       newPassword: "",
       outflag: false
@@ -80,6 +80,7 @@ export default {
       };
     },
     saveUserData() {
+      this.user.userName = this.user.userName.trim()
       this.oldPasswordMd5 = this.$MD5(this.oldPassword);
       if (!this.user.userName) {
         this.$Message.error("用户名不能为空");
@@ -133,8 +134,9 @@ export default {
       window.history.back();
     },
     signOut() {
-      localStorage.currentUser = "";
-      localStorage.activeRouter = "";
+      // localStorage.currentUser = "";
+      // localStorage.activeRouter = "";
+      localStorage.clear()
       this.$router.push({ name: "sign_in" });
     }
   }

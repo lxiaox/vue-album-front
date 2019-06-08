@@ -146,12 +146,12 @@ export default {
       checkedAlbumsLength: 0,
       reAddAlbumsCount: 0,
       // 多选image
-      allImagesFlag: false,
-      someImagesFlag: false,
+      allImagesFlag: false, //全选标识
+      someImagesFlag: false, // 选部分标识
       checkedImages: [],
       allImagesId: [],
-      checkedImagesLength: 0,
-      reAddImagesCount: 0,
+      checkedImagesLength: 0, 
+      reAddImagesCount: 0, // 操作计数
       // 选择相册
       selectAlbumShow: false,
       noAlbumTipShow: false,
@@ -480,8 +480,8 @@ export default {
       this.modalClear = true;
     },
     confirmClearBin() {
-      this.handleCheckAllAlbums();
-      this.handleCheckAllImages();
+      this.checkedAlbums = this.allAlbumsId
+      this.checkedImages = this.allImagesId
       if (this.checkedAlbums.length > 0) {
         this.clearAlbums();
       }

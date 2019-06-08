@@ -74,7 +74,7 @@ export default {
     return {
       active: "home.album",
       user: {},
-      userAvater: "static/images/github.jpg",
+      userAvater: "static/images/github.png",
       ifMoreShow: false
     };
   },
@@ -130,14 +130,12 @@ export default {
       this.$router.push({ name: "home.invoicePage" });
     },
     signOut() {
-      localStorage.currentUser = "";
-      localStorage.activeRouter = "";
+      localStorage.clear()
       this.$router.push({ name: "sign_in" });
     }
   },
   watch: {
     $route(to) {
-      console.log(to.name)
       this.active = to.name;
       localStorage.activeRouter = to.name;
     }

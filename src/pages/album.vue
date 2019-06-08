@@ -47,7 +47,7 @@
       <p>删除后可在回收站内查看</p>
     </Modal>
     <!-- 无相册显示 -->
-    <div class="nothing-msg" v-show="noAlbumShow">
+    <div class="nothing-msg nothing-msg1" v-show="noAlbumShow">
       <i class="iconfont icon-kong"></i>
       <br>
       <span @click="addAlbum">还没有相册，去创建</span>

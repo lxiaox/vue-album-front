@@ -43,6 +43,8 @@
     <!-- 无照片显示 -->
     <div class="nothing-msg" v-show="noImageShow">
       <i class="iconfont icon-kong"></i>
+      <br>
+      <span>暂无图片</span>
     </div>
     <!-- 返回按钮 -->
     <button class="to-back-button" v-show="!this.templateInMark" @click="toBackPage">返&nbsp;回</button>

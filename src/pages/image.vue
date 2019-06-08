@@ -35,6 +35,8 @@
     <!-- 无照片显示 -->
     <div class="nothing-msg" v-show="noImageShow">
       <i class="iconfont icon-kong"></i>
+      <br>
+      <span>暂无图片</span>
     </div>
     <!-- 全屏浏览组件 -->
     <full-page-view
