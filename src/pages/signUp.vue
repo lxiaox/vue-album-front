@@ -2,18 +2,18 @@
   <div class="sign-in-wrapper">
     <div class="logo">Album</div>
     <div class="loginBox">
-      <h5>登&nbsp;&nbsp;录</h5>
+      <h5>注&nbsp;&nbsp;册</h5>
       <div prop="userName" class="row">
         <label for>用户名</label>
-        <input type="text" v-model="userName" placeholder="请输入用户名">
+        <input type="text" v-model="userName" placeholder="不超过16位">
       </div>
       <div prop="password" class="row">
         <label for>密码</label>
-        <input type="password" v-model="password" placeholder="请输入密码">
+        <input type="password" v-model="password" placeholder="6~21, 字母或数字">
       </div>
       <div prop="password" class="row">
         <label for>确认密码</label>
-        <input type="password" v-model="passwordConfirmation" placeholder="请输入密码">
+        <input type="password" v-model="passwordConfirmation" placeholder="请再次输入密码">
       </div>
       <div class="row">
         <button class="sign-up-btn" @click="signUp">注册</button>

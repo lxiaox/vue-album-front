@@ -86,7 +86,9 @@ export default {
               this.noImageShow = true;
             }
             if (res.status === 200) {
-              this.images = res.data;
+              this.images = res.data.filter(item=>{
+                return !item.isVideo
+              });
               this.noImageShow = false;
               this.layout = "square";
             }
@@ -110,7 +112,9 @@ export default {
               this.noImageShow = true;
             }
             if (res.status === 200) {
-              this.images = res.data;
+              this.images = res.data.filter(item=>{
+                return !item.isVideo
+              });
               this.noImageShow = false;
               this.layout = "square";
             }

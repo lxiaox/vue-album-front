@@ -3,12 +3,13 @@
     <!-- 创建相册行 -->
     <div class="create-album-row">
       <button class="create-album" @click="addAlbum">
-        <Icon type="ios-create-outline" size="24"/>
-        创建相册
+        <Icon type="ios-create-outline" size="24"/>创建相册
       </button>
+      <button class="select-view-way" @click="showClass = false" v-show="showClass">普通视图</button>
+      <button class="select-view-way" @click="showClass = true" v-show="!showClass">分类视图</button>
     </div>
     <!-- 所有相册 -->
-    <div class="album-box-wrapper clearfix">
+    <div v-show="!showClass" class="album-box-wrapper clearfix">
       <div class="album-box" v-for="(item, index) in albums" :key="`template-albums${index}`">
         <div class="album-cover" @click="toAlbumView(item)">
           <img :src="item.cover" alt="相册封面">
@@ -33,6 +34,48 @@
             <DropdownItem name="deleteAlbum">删除相册</DropdownItem>
           </DropdownMenu>
         </Dropdown>
+      </div>
+    </div>
+    <!-- 分类展示 -->
+    <div v-show="showClass">
+      <div
+        class="album-box-wrapper clearfix"
+        v-for="(classItem, i) in classifiedAlbums"
+        :key="`template-classify-kind${i}`"
+      >
+        <div class="class-name">
+          {{classItem.className}}
+          <span>/ {{classItem.albums.length}}个</span>
+        </div>
+        <div
+          class="album-box"
+          v-for="(item, index) in classItem.albums"
+          :key="`template-classify-album${index}`"
+        >
+          <div class="album-cover" @click="toAlbumView(item)">
+            <img :src="item.cover" alt="相册封面">
+          </div>
+          <div class="album-msg clearfix">
+            <div class="album-name">
+              <span :title="item.albumName">{{ item.albumName }}</span>
+            </div>
+            <div class="album-image-counts">
+              <span>{{ item.imageCounts }}</span>
+              <br>
+              <span>images</span>
+            </div>
+          </div>
+          <!-- 下拉菜单 -->
+          <Dropdown @on-click="handleDropDownClick($event, item)" class="drop-menu">
+            <a href="javascript:void(0)">
+              <Icon type="ios-arrow-down"></Icon>
+            </a>
+            <DropdownMenu class="drop-sub-menu" slot="list">
+              <DropdownItem name="editAlbum">编辑相册</DropdownItem>
+              <DropdownItem name="deleteAlbum">删除相册</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </div>
       </div>
     </div>
     <!-- 删除提示 -->
@@ -66,7 +109,7 @@
           </div>
           <div class="row2">
             <label class="album-description">相册描述</label>
-            <textarea v-model="addAlbumDescription"></textarea>
+            <textarea v-model="addAlbumDescription" placeholder="不超过100个字符"></textarea>
           </div>
           <div class="row2 row-cover" v-show="!isAddAlbum">
             <label>更换封面</label>
@@ -126,6 +169,14 @@ export default {
   data() {
     return {
       albums: [],
+      classifiedAlbums: [
+        { classValue: 1, className: "普通", albums: [] },
+        { classValue: 2, className: "风景", albums: [] },
+        { classValue: 3, className: "人物", albums: [] },
+        { classValue: 4, className: "美食", albums: [] },
+        { classValue: 5, className: "旅游", albums: [] }
+      ],
+      showClass: false,
       addAlbumName: "",
       addAlbumDescription: "",
       noAlbumShow: false,
@@ -147,7 +198,7 @@ export default {
       btnDisalbed: false
     };
   },
-  created() {
+  mounted() {
     this.getAlbums();
   },
   methods: {
@@ -163,14 +214,37 @@ export default {
               this.noAlbumShow = true;
             }
             if (res.status === 200) {
-              this.albums = res.data;
               this.noAlbumShow = false;
+              this.albums = res.data;
+              this.classifyAlbums(res.data);
             }
           },
           req => {
             this.$Message.error("系统出错,请稍后重试");
           }
         );
+    },
+    classifyAlbums(albums) {
+      // 清空
+      this.classifiedAlbums = [
+        { classValue: 1, className: "普通", albums: [] },
+        { classValue: 2, className: "风景", albums: [] },
+        { classValue: 3, className: "人物", albums: [] },
+        { classValue: 4, className: "美食", albums: [] },
+        { classValue: 5, className: "旅游", albums: [] }
+      ];
+      albums.forEach(album => {
+        this.classifiedAlbums.forEach(item => {
+          if (album.classification === item.classValue) {
+            item.albums.push(album);
+          }
+        });
+      });
+      this.classifiedAlbums = this.classifiedAlbums.filter(item => {
+        if (item.albums.length > 0) {
+          return item;
+        }
+      });
     },
     toAlbumView(item) {
       this.$router.push({ name: `home.albumView`, params: { album: item } });
@@ -189,6 +263,10 @@ export default {
         return;
       }
       if (this.addAlbumName.length > 10) {
+        this.$Message.error("相册名称过长");
+        return;
+      }
+      if (this.addAlbumDescription.length > 100) {
         this.$Message.error("相册名称过长");
         return;
       }
@@ -237,6 +315,10 @@ export default {
         return;
       }
       if (this.addAlbumName.length > 10) {
+        this.$Message.error("相册名称过长");
+        return;
+      }
+      if (this.addAlbumDescription.length > 100) {
         this.$Message.error("相册名称过长");
         return;
       }
@@ -302,12 +384,22 @@ export default {
     margin-bottom: 16px;
     padding-left: 20px;
     font-size: 14px;
-    button.create-album {
+    button {
       font-size: 16px;
+      &.create-album {
+        margin-right: 20px;
+      }
     }
   }
   .album-box-wrapper {
     width: 100%;
+    .class-name {
+      font-size: 20px;
+      padding-left: 25px;
+      span{
+        font-size: 14px;
+      }
+    }
     .album-box {
       border: 1px solid @demo-green;
       border-radius: 2px;

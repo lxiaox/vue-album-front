@@ -9,7 +9,7 @@
       </div>
       <div prop="password" class="row">
         <label for>密码</label>
-        <input type="password" v-model="password" placeholder="请输入密码">
+        <input type="password" v-model="password" placeholder="请输入密码" @keyup.enter="signIn">
       </div>
       <div class="row">
         <button class="login-btn" @click="signIn">登录</button>

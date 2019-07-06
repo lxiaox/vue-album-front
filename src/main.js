@@ -17,10 +17,13 @@ Vue.prototype.$http = axios
 Vue.prototype.$MD5 = MD5
 Vue.config.productionTip = false
 
+import VueCropper from 'vue-cropper'
+Vue.use(VueCropper)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#root',
-  data(){
+  data() {
     return {
     }
   },

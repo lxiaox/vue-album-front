@@ -36,7 +36,7 @@ export default {
             }).then((res) => {
                 // 初始化扫描参数成功函数
                 console.log('初始化扫描参数成功')
-                this.scanMsg = '开在准备扫描'
+                this.scanMsg = '正在准备扫描'
                 // 通过jsonp调用扫描仪
                 // 定义hostUrl、查询参数
                 const hostUrl = 'http://127.0.0.1:'

@@ -1,37 +1,45 @@
 <!-- 只点击相册进入 -->
 <template>
-  <div class="image-wrapper">
+  <div class="image-page">
     <!-- 顶行相册信息、添加图片 -->
     <div class="top-row clearfix">
       <div class="album-cover">
         <img :src="viewAlbum.cover">
       </div>
       <span class="album-name">{{ viewAlbum.albumName }}</span>
+      <span class="album-descrition">{{viewAlbum.description}}</span>
       <span class="album-count">{{ viewAlbum.imageCounts }}张</span>
       <button class="add-image-button" @click="addImageBoxShow">
         <Icon type="ios-camera-outline" size="24"/>上传图片
       </button>
       <button class="to-layout-show-button" @click="toLayoutShow">
-        <Icon type="ios-images-outline" size="22"/>
-        布局展示
+        <Icon type="ios-images-outline" size="22"/>布局展示
       </button>
       <button class="to-back-button" @click="toBackPage">返&nbsp;回</button>
+      <!-- 查找框 -->
+      <Input
+        suffix="ios-search"
+        class="searchInput"
+        v-model="matchStr"
+        @on-enter="searchImages"
+        placeholder="输入照片名称查找"
+        style="width: 200px"
+      />
     </div>
-    <!-- 上传图片组件 -->
-    <upload-image v-show="ifAddImageBoxShow" v-on:hide-upload-box="addImageHide"></upload-image>
-    <!-- 全屏浏览组件 -->
-    <full-page-view
-      v-if="ifFullpageView"
-      v-on:exit-full-page="fullpageViewHide"
-      :images="images"
-      :fullImageIndex="fullImageIndex"
-    ></full-page-view>
     <!-- 图片展示 -->
     <div class="all-images clearfix">
       <div class="image-wrapper" v-for="(item, index) in images" :key="`square-image-Key${index}`">
         <!-- 照片图 -->
         <div class="image-box">
-          <img :src="item.imageData" :title="dbclickMsg" @dblclick="fullpageViewShow(index)">
+          <img
+            v-show="!item.isVideo"
+            :src="item.imageData"
+            :title="dbclickMsg"
+            @dblclick="fullpageViewShow(index)"
+          >
+          <video v-show="item.isVideo" controls @dblclick="fullpageViewShow(index)">
+            <source :src="item.imageData">
+          </video>
         </div>
         <!-- 照片名称 -->
         <div class="image-name-box" :title="item.imageName">{{ item.imageName }}</div>
@@ -44,10 +52,21 @@
             <DropdownItem name="editImage">编辑照片信息</DropdownItem>
             <DropdownItem name="setAsCover">设置为封面</DropdownItem>
             <DropdownItem name="deleteImage">删除</DropdownItem>
+            <DropdownItem v-show="!item.isVideo" name="cutImage">图片裁剪</DropdownItem>
+            <DropdownItem v-show="!item.isVideo" name="filterImage">图片过滤</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </div>
     </div>
+    <!-- 上传图片组件 -->
+    <upload-image v-show="ifAddImageBoxShow" v-on:hide-upload-box="addImageHide"></upload-image>
+    <!-- 全屏浏览组件 -->
+    <full-page-view
+      v-if="ifFullpageView"
+      v-on:exit-full-page="fullpageViewHide"
+      :images="images"
+      :fullImageIndex="fullImageIndex"
+    ></full-page-view>
     <!-- 编辑照片框 -->
     <div class="edit-image-wrapper" v-show="ifEditImageShow">
       <div class="edit-image-box">
@@ -86,6 +105,18 @@
       <br>
       <span @click="addImageBoxShow">还没有图片，去添加</span>
     </div>
+    <!-- 图片裁剪组件 -->
+    <cut-image
+      v-if="ifCutImageShow"
+      :cuttingImage="cuttingImage"
+      v-on:exit-cut-image="cutImageHide"
+    ></cut-image>
+    <!-- 图片色彩调整等组件 -->
+    <filter-image
+      v-if="ifFilterImageShow"
+      :filteringImage="filteringImage"
+      v-on:exit-filter-image="filterImageHide"
+    ></filter-image>
   </div>
 </template>
 <script>
@@ -93,16 +124,27 @@ export default {
   data() {
     return {
       images: [],
+      allImages: [],
       imageSrc: "static/images/image.png",
       noImageShow: false,
       ifAddImageBoxShow: false,
+      // 全屏
       dbclickMsg: "双击图片全屏浏览",
       ifFullpageView: false,
       fullImageIndex: 0,
       viewAlbum: {},
+      // 编辑
       ifEditImageShow: false,
       currentEditImage: {},
-      btnDisalbed: false
+      btnDisalbed: false,
+      // 搜索
+      matchStr: "",
+      // 图片裁剪
+      ifCutImageShow: false,
+      cuttingImage: {},
+      // 图片过滤
+      ifFilterImageShow: false,
+      filteringImage: {}
     };
   },
   created() {
@@ -126,6 +168,7 @@ export default {
             }
             if (res.status === 200) {
               this.images = res.data;
+              this.allImages = res.data; // 直接存res.data,内存和this.images分开
               this.noImageShow = false;
             }
           },
@@ -173,6 +216,8 @@ export default {
       if ($event === "editImage") this.editImage(item);
       if ($event === "setAsCover") this.setAsCover(item);
       if ($event === "deleteImage") this.deleteImage(item);
+      if ($event === "cutImage") this.cutImage(item);
+      if ($event === "filterImage") this.filterImage(item);
     },
     editImage(item) {
       this.ifEditImageShow = true;
@@ -236,11 +281,38 @@ export default {
           }
         );
     },
+    cutImage(item) {
+      this.ifCutImageShow = true;
+      this.cuttingImage = item;
+    },
+    cutImageHide() {
+      this.ifCutImageShow = false;
+    },
+    filterImage(item){
+      this.ifFilterImageShow = true;
+      this.filteringImage = item;
+    },
+    filterImageHide() {
+      this.ifFilterImageShow = false;
+    },
     toLayoutShow() {
       this.$router.push({ name: "home.layoutShow" });
     },
     toBackPage() {
       window.history.back();
+    },
+    searchImages() {
+      console.log("match");
+      this.matchStr = this.matchStr.trim();
+      if (!this.matchStr) {
+        this.images = this.allImages;
+      } else {
+        this.images = this.allImages.filter(item => {
+          {
+            if (item.imageName.indexOf(this.matchStr) > -1) return item;
+          }
+        });
+      }
     }
   }
 };
@@ -248,7 +320,7 @@ export default {
 
 <style lang="less" scoped>
 @import url("../assets/less/color.less");
-.image-wrapper {
+.image-page {
   .top-row {
     // border: 1px solid;
     padding-left: 20px;
@@ -268,6 +340,10 @@ export default {
         font-size: 22px;
         color: #000;
         text-shadow: 2px 2px #bbb;
+      }
+      &.album-descrition {
+        font-size: 14px;
+        margin-top: 6px;
       }
       &.album-count {
         font-size: 14px;
@@ -293,6 +369,12 @@ export default {
       position: absolute;
       top: 40px;
       left: 490px;
+      font-size: 16px;
+    }
+    .searchInput {
+      position: absolute;
+      top: 40px;
+      left: 753px;
       font-size: 16px;
     }
   }
@@ -409,6 +491,7 @@ export default {
       box-shadow: @image-box-shadow;
       .image-box {
         height: 170px;
+        overflow: hidden;
         img {
           width: 100%;
           height: 100%;

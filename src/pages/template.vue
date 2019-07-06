@@ -33,7 +33,7 @@
               <Icon class="more-arrow" type="ios-arrow-forward" v-show="!ifMoreShow" />
               <Icon class="more-arrow" type="ios-arrow-down" v-show="ifMoreShow" />
             </li>
-            <li :class="{'active': active==='home.ivoicePage'}" 
+            <li :class="{'active': active==='home.invoicePage'}" 
             class="more-sub-nav" v-show="ifMoreShow" @click="toInvoicePage">
               e 税云相关
             </li>

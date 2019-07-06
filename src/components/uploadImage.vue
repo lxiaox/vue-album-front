@@ -15,7 +15,10 @@
           <div class="upload-progress-wrapper" v-show="item.ifUploadProgressShow">
             <span>正在上传: {{ item.progress }}</span>
           </div>
-          <img :src="item.data" alt="图片预览">
+          <img v-if="!item.isVideo" :src="item.data" alt="图片预览">
+          <video v-if="item.isVideo" controls>
+            <source :src="item.data">
+          </video>
           <Icon
             size="24"
             class="delete-icon"
@@ -29,7 +32,7 @@
           type="file"
           ref="inputImg"
           name="img"
-          accept="image/*"
+          accept="image/*, video/*"
           @change="changePic"
         >
         <div :title="msg" class="camera-wrapper" @click="selectImage">
@@ -63,12 +66,18 @@ export default {
     changePic() {
       const _that = this;
       let results = [...this.$refs.inputImg.files];
-      this.$refs.inputImg.value = ''
-      Object.keys(results).forEach(key => {
+      this.$refs.inputImg.value = "";
+      results.forEach(item => {
+        let isVideo = false;
+        if (item.type.slice(0, 5) === "video") {
+          isVideo = true;
+        }
         var reads = new FileReader();
-        reads.readAsDataURL(results[key]);
+        reads.readAsDataURL(item);
         reads.onload = function() {
+          console.log(this.result)
           _that.selectedImages.push({
+            isVideo: isVideo,
             data: this.result,
             ifUploadProgressShow: false,
             progress: "0%"
@@ -134,7 +143,8 @@ export default {
             userId: localStorage.currentUser,
             albumId: JSON.parse(localStorage.viewAlbum).albumId,
             image: item.data,
-            uploadId: this.uploadBatch
+            uploadId: this.uploadBatch,
+            isVideo: item.isVideo
           },
           config
         )
@@ -158,7 +168,7 @@ export default {
     },
     cancel() {
       this.selectedImages = [];
-      this.$refs.inputImg.value = ''
+      this.$refs.inputImg.value = "";
       this.uploadBatch = "";
       this.loading = false;
       this.$emit("hide-upload-box");
@@ -217,6 +227,7 @@ export default {
         margin-right: 16px;
         margin-bottom: 16px;
         position: relative;
+        overflow: hidden;
         .upload-progress-wrapper {
           width: 100%;
           height: 100%;

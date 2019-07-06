@@ -8,7 +8,6 @@
           :class="{fadeIn:fadeInAble}"
           v-for="(item, index) in newImages"
           :key="`ccordionKey${index}`"
-          v-show="index<5"
           ref="li"
         >
           <img :src="item.imageData">

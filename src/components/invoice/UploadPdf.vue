@@ -50,11 +50,8 @@ export default {
             })
             .then((res) => {
                 // console.log('pdf上传成功')
-                if (false) {
-                    this.$Message.error('pdf上传失败')
-                }else{
-                    // ....
-                }
+                console.log(res.data.value.remark)
+                this.$Message.success('pdf上传成功')
                 // console.log(res.data.value.remark)
             },(err) => {
                 this.$Message.error('pdf上传失败')

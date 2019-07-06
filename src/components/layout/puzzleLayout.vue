@@ -18,7 +18,8 @@
 export default {
   name: "puzzleLayout",
   data() {
-    return {};
+    return {
+    };
   },
   props: ["images", "layout", "puzzleNumber"],
   methods: {

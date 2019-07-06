@@ -23,7 +23,7 @@
     <div class="row password-modify-row">
       <label>修改密码</label>
       <input class="old-password" type="text" v-model="oldPassword" placeholder="旧密码">
-      <input class="new-password" type="text" v-model="newPassword" placeholder="新密码，6~16，字母或数字">
+      <input class="new-password" type="text" v-model="newPassword" placeholder="新密码，6~21，字母或数字">
     </div>
     <!-- 性别 -->
     <div class="row gender-row">

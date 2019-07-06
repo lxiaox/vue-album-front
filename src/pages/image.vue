@@ -22,7 +22,12 @@
             :key="`upload-image-key${i}`"
             :title="clickMsg"
           >
-            <img :src="img.imageData">
+            <div>
+              <img v-if="!img.isVideo" :src="img.imageData">
+              <video v-if="img.isVideo" controls>
+                <source :src="img.imageData">
+              </video>
+            </div>
           </div>
         </div>
         <!-- 删除按钮 -->
@@ -151,7 +156,7 @@ export default {
       this.ifFullpageView = false;
     },
     deleteUpload(uploadItem) {
-      console.log(uploadItem)
+      console.log(uploadItem);
       this.$http
         .post("http://127.0.0.1:3000/deleteUpload", {
           uploadId: uploadItem.uploadId
@@ -197,6 +202,11 @@ export default {
           cursor: pointer;
           margin-right: 10px;
           margin-bottom: 10px;
+          overflow: hidden;
+          div{
+            width: 100%;
+            height: 100%;
+          }
         }
       }
       .upload-delete {

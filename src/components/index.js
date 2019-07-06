@@ -13,6 +13,9 @@ import squareLayout from '@/components/layout/squareLayout'
 import uploadImage from '@/components/uploadImage'
 // 全屏浏览
 import fullPageView from '@/components/fullPageView'
+// 图片裁剪
+import cutImage from '@/components/ImageEdit/cutImage'
+import filterImage from '@/components/ImageEdit/filterImage'
 
 import Vue from 'vue'
 Vue.component('scan-invoice',ScanInvoice)
@@ -26,3 +29,5 @@ Vue.component('ccordion-layout',ccordionLayout)
 Vue.component('square-layout',squareLayout)
 Vue.component('upload-image',uploadImage)
 Vue.component('full-page-view',fullPageView)
+Vue.component('cut-image',cutImage)
+Vue.component('filter-image',filterImage)

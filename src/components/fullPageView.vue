@@ -3,7 +3,10 @@
     <!-- 全屏浏览 -->
     <div class="full-page-box">
       <div class="big-image-box">
-        <img :src="images[bigImageIndex].imageData">
+        <img v-if="!images[bigImageIndex].isVideo" :src="images[bigImageIndex].imageData">
+        <video v-if="images[bigImageIndex].isVideo" controls>
+          <source :src="images[bigImageIndex].imageData">
+        </video>
       </div>
       <a @click="slide('left')" class="prev"></a>
       <a @click="slide('right')" class="next"></a>
@@ -35,7 +38,7 @@ export default {
         if (this.hideMark === 0 || this.ifAutoPlay === false) return;
         this.timer = window.setInterval(() => {
           this.slide("auto");
-        }, 1200);
+        }, 2000);
       }
     });
     this.listenKey();
@@ -55,10 +58,10 @@ export default {
           _this.slide("right");
         }
         if (e && e.keyCode === 32) {
-          if( _this.ifAutoPlay) {
+          if (_this.ifAutoPlay) {
             _this.stopPlay();
-          }else{
-            _this.autoPlay()
+          } else {
+            _this.autoPlay();
           }
         }
       };
@@ -109,13 +112,15 @@ export default {
 
 <style lang="less" scoped>
 .full-page-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 12;
   .full-page-box {
     width: 100%;
     height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 12;
     background: rgba(0, 0, 0, 0.9);
     .big-image-box {
       position: absolute;
@@ -124,11 +129,9 @@ export default {
       transform: translate(-50%, -50%);
       width: 900px;
       height: 520px;
+      overflow: hidden;
       img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
+        object-fit: contain;
       }
     }
     a {

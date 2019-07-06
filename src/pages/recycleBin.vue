@@ -61,7 +61,10 @@
               <Checkbox class="AI-checkbox" :label="item.imageId">
                 <!-- 照片 -->
                 <div class="AI-image">
-                  <img :src="item.imageData">
+                  <img v-if="!item.isVideo" :src="item.imageData">
+                  <video v-if="item.isVideo" controls>
+                    <source :src="item.imageData">
+                  </video>
                 </div>
                 <!-- 名称 -->
                 <div class="AI-name">{{ item.imageName }}</div>
@@ -150,7 +153,7 @@ export default {
       someImagesFlag: false, // 选部分标识
       checkedImages: [],
       allImagesId: [],
-      checkedImagesLength: 0, 
+      checkedImagesLength: 0,
       reAddImagesCount: 0, // 操作计数
       // 选择相册
       selectAlbumShow: false,
@@ -480,8 +483,8 @@ export default {
       this.modalClear = true;
     },
     confirmClearBin() {
-      this.checkedAlbums = this.allAlbumsId
-      this.checkedImages = this.allImagesId
+      this.checkedAlbums = this.allAlbumsId;
+      this.checkedImages = this.allImagesId;
       if (this.checkedAlbums.length > 0) {
         this.clearAlbums();
       }
@@ -539,10 +542,12 @@ export default {
           position: absolute;
           top: 5px;
           left: 5px;
+          z-index: 100;
         }
         .AI-image {
           width: 100%;
           height: 150px;
+          overflow: hidden;
         }
         .AI-name {
           text-align: center;
